@@ -1,9 +1,13 @@
 #pragma once
 #include <SDL.h>
 
+#include "../../common/GameMechanics/Match.h"
+
 class Game
 {
 private:
+	Match match;
+
 public:
 	Game();
 

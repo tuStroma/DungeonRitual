@@ -1,8 +1,8 @@
 #include "Game.h"
 
 Game::Game()
-{
-}
+	:match()
+{}
 
 void Game::Launch()
 {
@@ -14,6 +14,8 @@ void Game::Launch()
 
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
+
+	match.Start();
 
 	SDL_Delay(5000);
 }

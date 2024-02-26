@@ -6,7 +6,7 @@
 class Game
 {
 private:
-	Match match;
+	Match* match = nullptr;
 
 public:
 	Game();

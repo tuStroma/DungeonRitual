@@ -3,7 +3,11 @@
 
 namespace display
 {
-	inline void DrawPixel(SDL_Surface* surface, int x, int y, Uint32 color) {
+	inline void DrawPixel(SDL_Surface* surface, int x, int y, Uint32 color) 
+	{
+		if (x < 0 || y < 0 || x >= surface->w || y >= surface->h)
+			return;
+
 		int bpp = surface->format->BytesPerPixel;
 		Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
 		*(Uint32*)p = color;
@@ -26,6 +30,9 @@ namespace display
 
 		int y0 = y_start < y_finish ? y_start : y_finish;
 		int y1 = y_start > y_finish ? y_start : y_finish;
+
+		if (x1 < 0 || y1 < 0 || x0 >= surface->w || y0 >= surface->h)
+			return;
 
 		for (int height = y0; height <= y1; height++)
 			DrawLine(surface, x0, height, x1 - x0, 1, 0, color);

@@ -32,6 +32,10 @@ private:
 
 	void DrawObject(GameObject* obj, SDL_Surface* surface, Uint32 color);
 
+	// Controle
+	SDL_Event* event;
+
+	void Input();
 	void Update();
 	void Display();
 

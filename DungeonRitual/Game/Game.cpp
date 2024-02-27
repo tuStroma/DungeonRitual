@@ -22,6 +22,4 @@ void Game::Launch()
 
 	match = new Match(screen, renderer, scrtex);
 	match->Start();
-
-	SDL_Delay(5000);
 }

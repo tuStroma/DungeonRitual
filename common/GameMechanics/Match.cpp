@@ -2,12 +2,12 @@
 
 int Match::posToCameraX(double x)
 {
-	return (int) (x * DISTANCE_TO_PIXELS - camera_x + SCREEN_WIDTH / 2);
+	return (int) ((x - camera_x) * DISTANCE_TO_PIXELS + SCREEN_WIDTH / 2);
 }
 
 int Match::posToCameraY(double y)
 {
-	return (int) (-y * DISTANCE_TO_PIXELS + camera_y + SCREEN_HEIGHT / 2);
+	return (int) ((-y + camera_y) * DISTANCE_TO_PIXELS + SCREEN_HEIGHT / 2);
 }
 
 void Match::DrawObject(GameObject* obj, SDL_Surface* surface, Uint32 color)

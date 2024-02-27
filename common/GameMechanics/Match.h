@@ -19,8 +19,8 @@ private:
 	int t1 = 0, t2 = 0;
 
 	// Camera
-	int camera_x = 0;
-	int camera_y = 0;
+	double camera_x = 0;
+	double camera_y = 0;
 
 	int posToCameraX(double x);
 	int posToCameraY(double y);

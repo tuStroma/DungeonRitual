@@ -1,11 +1,15 @@
 #include "GameObject.h"
 
-GameObject::GameObject(double x, double y, double width, double height, int color)
-	:x(x), y(y), width(width), height(height), color(color)
+GameObject::GameObject(Point positio, double width, double height, int color)
+	:position(position), width(width), height(height), color(color)
 {}
 
-void GameObject::setPosition(double x, double y)
+void GameObject::moveBy(Point vector)
 {
-	this->x = x;
-	this->y = y;
+	position.Move(vector);
+}
+
+void GameObject::moveTo(Point new_pos)
+{
+	position = new_pos;
 }

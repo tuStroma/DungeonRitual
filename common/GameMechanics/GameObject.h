@@ -1,9 +1,10 @@
 #pragma once
+#include "geometry/Point.h"
 
 class GameObject
 {
 private:
-	double x = 0, y = 0;
+	Point position;
 
 	double width = 0, height = 0;
 
@@ -12,16 +13,16 @@ private:
 
 public:
 	GameObject() {}
-	GameObject(double x, double y, double width, double height, int color);
+	GameObject(Point position, double width, double height, int color);
 
-	double X() { return x; }
-	double Y() { return y; }
+	Point Position() { return position; }
 
 	double Width() { return width; }
 	double Height() { return height; }
 
 	int Color() { return color; }
 
-	void setPosition(double x, double y);
+	void moveTo(Point new_pos);
+	void moveBy(Point vector);
 };
 

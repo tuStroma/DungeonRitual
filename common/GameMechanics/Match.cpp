@@ -26,14 +26,14 @@ void Match::Input()
 		switch (event->type) {
 		case SDL_KEYDOWN:
 			if (event->key.keysym.sym == SDLK_ESCAPE) quit = 1;
-			else if (event->key.keysym.sym == SDLK_w) v_y = 4.0;
-			else if (event->key.keysym.sym == SDLK_s) v_y = -4.0;
-			else if (event->key.keysym.sym == SDLK_a) v_x = -4.0;
-			else if (event->key.keysym.sym == SDLK_d) v_x = 4.0;
+			else if (event->key.keysym.sym == SDLK_a) player.MoveLeft(true);
+			else if (event->key.keysym.sym == SDLK_d) player.MoveRight(true);
+			else if (event->key.keysym.sym == SDLK_SPACE) player.Jump(true);
 			break;
 		case SDL_KEYUP:
-			if (event->key.keysym.sym == SDLK_w || event->key.keysym.sym == SDLK_s) v_y = 0.0;
-			else if (event->key.keysym.sym == SDLK_a || event->key.keysym.sym == SDLK_d) v_x = 0.0;
+			if (event->key.keysym.sym == SDLK_a) player.MoveLeft(false);
+			else if (event->key.keysym.sym == SDLK_d) player.MoveRight(false);
+			else if (event->key.keysym.sym == SDLK_SPACE) player.Jump(false);
 			break;
 		case SDL_QUIT:
 			quit = 1;
@@ -52,11 +52,15 @@ void Match::Update()
 
 	// Update Game state
 	// Move all objects
-	player.moveBy(Point(delta * v_x, delta * v_y));
+	player.Move(delta);
+	//player.moveBy(Point(delta * v_x, delta * v_y));
 
 	// Check colisions
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 		player.CheckColision(&walls[i]);
+
+	// Camera position
+	camera = player.Position();
 }
 
 void Match::Display()
@@ -70,7 +74,7 @@ void Match::Display()
 
 	// Draw
 	// Draw environment
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 		DrawObject(&walls[i], screen, blue);
 	
 	// Draw player
@@ -86,12 +90,13 @@ void Match::Display()
 Match::Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex)
 	:screen(screen), renderer(renderer), scrtex(scrtex), event(new SDL_Event())
 {
-	player = GameObject(Point(0,0), 1, 2, 0);
+	player = Actor(Point(0,0), 1, 2, 0);
 
 	walls[0] = GameObject(Point(0, -7.0), 20, 1, 0);
 	walls[1] = GameObject(Point(0, 7.0), 20, 1, 0);
 	walls[2] = GameObject(Point(10.0, 0), 1, 14, 0);
 	walls[3] = GameObject(Point(-10.0, 0), 1, 14, 0);
+	walls[4] = GameObject(Point(0, -2.5), 4, 1, 0);
 }
 
 void Match::Start()

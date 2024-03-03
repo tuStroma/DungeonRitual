@@ -4,6 +4,7 @@
 #include "../Display/SDL_display.h"
 #include "../Display/DisplayParameters.h"
 #include "GameObject.h"
+#include "Actor.h"
 
 class Match
 {
@@ -11,9 +12,9 @@ private:
 	bool quit = false;
 
 	// Game status
-	GameObject player;
+	Actor player;
 
-	GameObject walls[4];
+	GameObject walls[5];
 
 	double v_x = 1;
 	double v_y = 0;

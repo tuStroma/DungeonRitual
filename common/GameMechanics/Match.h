@@ -13,8 +13,10 @@ private:
 	// Game status
 	GameObject player;
 
-	int v_x = 1;
-	int v_y = 0;
+	GameObject walls[4];
+
+	double v_x = 1;
+	double v_y = 0;
 
 	int t1 = 0, t2 = 0;
 

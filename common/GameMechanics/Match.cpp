@@ -15,8 +15,8 @@ void Match::DrawObject(GameObject* obj, SDL_Surface* surface, Uint32 color)
 	display::DrawRectangleCentered(	screen,
 									posToCameraX(obj->Position().X()),
 									posToCameraY(obj->Position().Y()),
-									obj->Width() * DISTANCE_TO_PIXELS,
-									obj->Height() * DISTANCE_TO_PIXELS,
+									(int)(obj->Width() * DISTANCE_TO_PIXELS),
+									(int)(obj->Height() * DISTANCE_TO_PIXELS),
 									color);
 }
 
@@ -51,18 +51,28 @@ void Match::Update()
 	std::cout << delta << "\n";
 
 	// Update Game state
+	// Move all objects
 	player.moveBy(Point(delta * v_x, delta * v_y));
+
+	// Check colisions
+	for (int i = 0; i < 4; i++)
+		player.CheckColision(&walls[i]);
 }
 
 void Match::Display()
 {
 	int red = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
+	int blue = SDL_MapRGB(screen->format, 0x00, 0x00, 0xFF);
 	int black = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
 
 	// Clear frame
 	SDL_FillRect(screen, NULL, black);
 
 	// Draw
+	// Draw environment
+	for (int i = 0; i < 4; i++)
+		DrawObject(&walls[i], screen, blue);
+	
 	// Draw player
 	DrawObject(&player, screen, red);
 
@@ -77,6 +87,11 @@ Match::Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex)
 	:screen(screen), renderer(renderer), scrtex(scrtex), event(new SDL_Event())
 {
 	player = GameObject(Point(0,0), 1, 2, 0);
+
+	walls[0] = GameObject(Point(0, -7.0), 20, 1, 0);
+	walls[1] = GameObject(Point(0, 7.0), 20, 1, 0);
+	walls[2] = GameObject(Point(10.0, 0), 1, 14, 0);
+	walls[3] = GameObject(Point(-10.0, 0), 1, 14, 0);
 }
 
 void Match::Start()

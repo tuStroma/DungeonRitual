@@ -5,6 +5,7 @@ class GameObject
 {
 private:
 	Point position;
+	Point previous_position;
 
 	double width = 0, height = 0;
 
@@ -24,5 +25,10 @@ public:
 
 	void moveTo(Point new_pos);
 	void moveBy(Point vector);
+
+	// Colisions
+	double Colision1D(double position, double previous_position, double size, double obj_a0, double obj_a1);
+	void CheckColision(GameObject* obj);
+
 };
 

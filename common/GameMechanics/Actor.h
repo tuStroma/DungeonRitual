@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cmath>
 
 #include "GameObject.h"
 #include "PhysicsParameters.h"
@@ -19,16 +20,17 @@ private:
 	GameObject* standing_on = nullptr;
 public:
 	Actor();
-	Actor(Point position, double width, double height, int color);
+	Actor(Rectangle* shape)
+		:GameObject(shape)
+	{}
 
 	void MoveLeft(bool move)  { moving_left = move; }
 	void MoveRight(bool move) { moving_right = move; }
 	void Jump(bool jump);
 
 	void Move(double t);
+	void WalkOnObject(GameObject* floor, double t);
 
-	// Colisions
-	double Colision1D(double position, double previous_position, double size, double obj_a0, double obj_a1, bool& left_colision, bool& right_colision);
-	void CheckColision(GameObject* obj);
+	void ResolveCollision(Point connection, GameObject* obj);
 };
 

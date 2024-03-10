@@ -1,14 +1,8 @@
 #include "Actor.h"
 
-
-
 Actor::Actor()
 {
 }
-
-Actor::Actor(Point position, double width, double height, int color)
-	:GameObject(position, width, height, color)
-{}
 
 void Actor::Jump(bool jump)
 {
@@ -25,83 +19,59 @@ void Actor::Move(double t)
 {
 	double vx = 0;
 
+	if (standing_on)
+	{
+		WalkOnObject(standing_on, t);
+		return;
+	}
+
 	// Horisontal
 	if (moving_left && !moving_right) vx = -speed;
 	else if (!moving_left && moving_right) vx = speed;
 
 	// Vertical
-	if (standing_on)
-		vertical_speed = 0.0;
-	else
-	{
-		vertical_speed += t * GRAVITY;
-		vertical_speed = MAX_FALL_SPEED > vertical_speed ? MAX_FALL_SPEED : vertical_speed;
-	}
+	vertical_speed += t * GRAVITY;
+	vertical_speed = MAX_FALL_SPEED > vertical_speed ? MAX_FALL_SPEED : vertical_speed;
 
-	moveBy(Point(vx * t, vertical_speed * t));
+	shape->MoveBy(Point(vx * t, vertical_speed * t));
 }
 
-double Actor::Colision1D(double position, double previous_position, double size, double obj_a0, double obj_a1, bool& left_colision, bool& right_colision)
+void Actor::WalkOnObject(GameObject* floor, double t)
 {
-	// Return values - side of colision
-	left_colision = false;
-	right_colision = false;
+	Shape* floor_shape = floor->GetShape();
 
-	// Bounds of object
-	double a0 = previous_position - size / 2;
-	double a1 = previous_position + size / 2;
-
-	bool intersect = true;
-
-	if (a0 >= obj_a1 || a1 <= obj_a0)
-		intersect = false;
-
-	// Slide on the edge
-	if (intersect)
-		return position;
-
-	// Stick to the edge
-	bool from_left = a1 <= obj_a0;
-
-	left_colision = from_left;
-	right_colision = !from_left;
-
-	return from_left ? obj_a0 - size / 2 : obj_a1 + size / 2;
-}
-
-void Actor::CheckColision(GameObject* obj)
-{
-	double x0 = position.X() - width / 2;
-	double x1 = position.X() + width / 2;
-	double y0 = position.Y() - height / 2;
-	double y1 = position.Y() + height / 2;
-
-	double obj_x0 = obj->Position().X() - obj->Width() / 2;
-	double obj_x1 = obj->Position().X() + obj->Width() / 2;
-	double obj_y0 = obj->Position().Y() - obj->Height() / 2;
-	double obj_y1 = obj->Position().Y() + obj->Height() / 2;
-
-	if (x0 >= obj_x1 || x1 <= obj_x0)
+	if (Rectangle* r = static_cast<Rectangle*>(floor_shape))
 	{
-		if (obj == standing_on)
+		double vx = 0.0;
+		if (moving_left && !moving_right) vx = -speed;
+		else if (!moving_left && moving_right) vx = speed;
+
+		shape->MoveBy(Point(vx * t, 0));
+
+		// Check if still standing on
+		double x_distance = fabs(shape->Position().X() - r->Position().X());
+		double standing_width = (((Rectangle*)shape)->Width() + r->Width()) / 2;
+
+		if (x_distance >= standing_width)
 			standing_on = nullptr;
-		return;
 	}
+}
 
-	if (y0 >= obj_y1 || y1 <= obj_y0)
+void Actor::ResolveCollision(Point connection, GameObject* obj)
+{
+	double con_x = connection.X();
+	double con_y = connection.Y();
+	if (isnan(con_x) || isnan(con_y))
 		return;
 
-	bool from_down, from_up, from_left, from_right;
-	double new_x = Colision1D(position.X(), previous_position.X(), width, obj_x0, obj_x1, from_left, from_right);
-	double new_y = Colision1D(position.Y(), previous_position.Y(), height, obj_y0, obj_y1, from_down, from_up);
+	double lower_edge = shape->Position().Y() - ((Rectangle*)shape)->Height() / 2;
+	double higher_edge = shape->Position().Y() + ((Rectangle*)shape)->Height() / 2;
 
-	position = Point(new_x, new_y);
-
-	// Vertical colision
-	if (from_up)
+	if (con_y == lower_edge)
+	{
 		standing_on = obj;
-	
-	if (from_down || from_up)
 		vertical_speed = 0;
-	
+	}
+	else if (con_y == higher_edge)
+		vertical_speed = 0;
 }

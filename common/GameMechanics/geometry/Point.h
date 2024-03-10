@@ -17,7 +17,7 @@ public:
 	void X(double x) { this->x = x; }
 	void Y(double y) { this->y = y; }
 
-	void Set(double x, double y) { X(x); Y(y); }
+	void Set(Point p) { x = p.x; y = p.y; }
 	void Move(Point p);
 };
 

@@ -12,12 +12,21 @@ int Match::posToCameraY(double y)
 
 void Match::DrawObject(GameObject* obj, SDL_Surface* surface, Uint32 color)
 {
-	display::DrawRectangleCentered(	screen,
-									posToCameraX(obj->Position().X()),
-									posToCameraY(obj->Position().Y()),
-									(int)(obj->Width() * DISTANCE_TO_PIXELS),
-									(int)(obj->Height() * DISTANCE_TO_PIXELS),
-									color);
+	Shape* shape = obj->GetShape();
+
+	if (Rectangle* r = static_cast<Rectangle*>(shape))
+	{
+		display::DrawRectangleCentered(	screen,
+										posToCameraX(obj->Position().X()),
+										posToCameraY(obj->Position().Y()),
+										(int)(r->Width() * DISTANCE_TO_PIXELS),
+										(int)(r->Height() * DISTANCE_TO_PIXELS),
+										color);
+	}
+	else
+	{
+		std::cout << "Unknown shape\n";
+	}
 }
 
 void Match::Input()
@@ -50,14 +59,17 @@ void Match::Update()
 	t1 = t2;
 	std::cout << delta << "\n";
 
-	// Update Game state
+	//// Update Game state
+
 	// Move all objects
 	player.Move(delta);
-	//player.moveBy(Point(delta * v_x, delta * v_y));
 
 	// Check colisions
 	for (int i = 0; i < 5; i++)
-		player.CheckColision(&walls[i]);
+	{
+		Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)player.GetShape(), *(Rectangle*)walls[i].GetShape());
+		player.ResolveCollision(connection, &walls[i]);
+	}
 
 	// Camera position
 	camera = player.Position();
@@ -90,13 +102,13 @@ void Match::Display()
 Match::Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex)
 	:screen(screen), renderer(renderer), scrtex(scrtex), event(new SDL_Event())
 {
-	player = Actor(Point(0,0), 1, 2, 0);
+	player = Actor(new Rectangle(Point(0, 0), 1, 2));
 
-	walls[0] = GameObject(Point(0, -7.0), 20, 1, 0);
-	walls[1] = GameObject(Point(0, 7.0), 20, 1, 0);
-	walls[2] = GameObject(Point(10.0, 0), 1, 14, 0);
-	walls[3] = GameObject(Point(-10.0, 0), 1, 14, 0);
-	walls[4] = GameObject(Point(0, -2.5), 4, 1, 0);
+	walls[0] = GameObject(new Rectangle(Point(0, -7.0), 20, 1));
+	walls[1] = GameObject(new Rectangle(Point(0, 7.0), 20, 1));
+	walls[2] = GameObject(new Rectangle(Point(10.0, 0), 1, 14));
+	walls[3] = GameObject(new Rectangle(Point(-10.0, 0), 1, 14));
+	walls[4] = GameObject(new Rectangle(Point(0, -2.5), 4, 1));
 }
 
 void Match::Start()

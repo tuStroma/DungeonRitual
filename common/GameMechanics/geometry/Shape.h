@@ -9,6 +9,7 @@ protected:
 
 public:
 	Shape() {}
+	virtual ~Shape() {}
 	Shape (Point position)
 		: position(position), previous_position(position)
 	{}
@@ -26,7 +27,7 @@ public:
 
 	void MoveTo(Point new_position)
 	{
-		previous_position = position;
+		//previous_position = position;
 		position.Set(new_position);
 	}
 };

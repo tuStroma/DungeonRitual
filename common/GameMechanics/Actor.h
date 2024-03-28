@@ -2,8 +2,9 @@
 #include <iostream>
 #include <cmath>
 
-#include "GameObject.h"
 #include "PhysicsParameters.h"
+#include "GameObject.h"
+#include "Slope.h"
 
 class Actor : public GameObject
 {
@@ -32,5 +33,7 @@ public:
 	void WalkOnObject(GameObject* floor, double t);
 
 	void ResolveCollision(Point connection, GameObject* obj);
+
+	Rectangle* getRectangle();
 };
 

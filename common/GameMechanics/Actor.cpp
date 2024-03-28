@@ -40,9 +40,11 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 {
 	Shape* floor_shape = floor->GetShape();
 
-	if (Rectangle* r = static_cast<Rectangle*>(floor_shape))
+	double vx = 0;
+	double vy = 0;
+
+	if (Rectangle* r = dynamic_cast<Rectangle*>(floor_shape))
 	{
-		double vx = 0.0;
 		if (moving_left && !moving_right) vx = -speed;
 		else if (!moving_left && moving_right) vx = speed;
 
@@ -53,6 +55,36 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 		double standing_width = (((Rectangle*)shape)->Width() + r->Width()) / 2;
 
 		if (x_distance >= standing_width)
+			standing_on = nullptr;
+	}
+	if (Segment* s = dynamic_cast<Segment*>(floor_shape))
+	{
+		Slope* slope = dynamic_cast<Slope*>(floor);
+
+		if (moving_left && !moving_right)
+		{
+			vx = -speed * slope->HorisontalMove();
+			vy = -speed * slope->VerticalMove();
+		}
+		else if (!moving_left && moving_right)
+		{
+			vx = speed * slope->HorisontalMove();
+			vy = speed * slope->VerticalMove();
+		}
+
+		if (slope->isLeftSlope())
+			vy = -vy;
+
+		shape->MoveBy(Point(vx * t, vy * t));
+
+		// Check if still standing on
+		double feet_x = Position().X() - getRectangle()->Width() / 2;
+
+		if (slope->isRightSlope())
+			feet_x += getRectangle()->Width();
+
+		if (feet_x < s->Position().X() && feet_x < s->EndPoint().X() ||
+			feet_x > s->Position().X() && feet_x > s->EndPoint().X())
 			standing_on = nullptr;
 	}
 }
@@ -74,4 +106,9 @@ void Actor::ResolveCollision(Point connection, GameObject* obj)
 	}
 	else if (con_y == higher_edge)
 		vertical_speed = 0;
+}
+
+Rectangle* Actor::getRectangle()
+{
+	return dynamic_cast<Rectangle*>(shape);
 }

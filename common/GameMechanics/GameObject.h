@@ -12,6 +12,7 @@ public:
 	GameObject(Shape* shape)
 		:shape(shape)
 	{}
+	virtual ~GameObject() {}
 
 	Point Position() { return shape->Position(); }
 	Shape* GetShape() { return shape; }

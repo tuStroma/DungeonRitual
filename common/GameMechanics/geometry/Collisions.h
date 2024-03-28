@@ -2,10 +2,102 @@
 #include <cmath>
 
 #include "Rectangle.h"
+#include "Segment.h"
 
 // Detect and resolve collisions of 2 Shapes
 namespace collisions
 {
+	namespace helpers
+	{
+		class Line
+		{
+		private:
+			double a = 0;
+			double b = 0;
+			double c = 0;
+		public:
+			Line(Segment& s)
+			{
+				if (s.Vector().X() == 0)
+				{
+					a = 1;
+					b = 0;
+					c = -s.Position().X();
+				}
+				else
+				{
+					a = -s.Vector().Y() / s.Vector().X();
+					b = 1;
+					c = -a * s.Position().X() - s.Position().Y();
+				}
+			}
+
+			double A() { return a; }
+			double B() { return b; }
+			double C() { return c; }
+
+			double Y(double x)
+			{
+				// Vertical line
+				if (b == 0)
+				{
+					if (x == -c)
+						return INFINITY;
+					else
+						return NAN;
+				}
+
+				return -a * x - c;
+			}
+
+			Point Intersect(Line& l)
+			{
+				// Parallel
+				if (a == l.A() && b == l.B())
+				{
+					if (c == l.C())
+						return Point(INFINITY, INFINITY);
+					return Point(NAN, NAN);
+				}
+
+				// One is vertical
+				if (b != l.B())
+				{
+					Line* vertical = b == 0 ? this : &l;
+					Line* regular  = b == 0 ? &l : this;
+					return Point(-vertical->C(), vertical->C() - regular->C());
+				}
+
+				double x = (l.C() - c) / (a - l.A());
+				double y = Y(x);
+				return Point(x, y);
+			}
+		};
+
+		inline bool CollinearSegmentsOverlap(Segment& s1, Segment& s2)
+		{
+			Point a_start = s1.Position();
+			Point a_end = s1.EndPoint();
+			double a_left = fmin(a_start.X(), a_end.X());
+			double a_right = fmax(a_start.X(), a_end.X());
+			double a_down = fmin(a_start.Y(), a_end.Y());
+			double a_up = fmax(a_start.Y(), a_end.Y());
+
+			Point b_start = s1.Position();
+			Point b_end = s1.EndPoint();
+			double b_left = fmin(b_start.X(), b_end.X());
+			double b_right = fmax(b_start.X(), b_end.X());
+			double b_down = fmin(b_start.Y(), b_end.Y());
+			double b_up = fmax(b_start.Y(), b_end.Y());
+
+			if (a_left > b_right || a_right < b_left ||
+				a_down > b_up || a_up < b_down)
+				return false;
+
+			return true;
+		}
+	}
+
 	inline bool RectangleToRectangle(Rectangle& r1, Rectangle& r2)
 	{
 		double r1_x0 = r1.Position().X() - r1.Width() / 2;
@@ -21,6 +113,26 @@ namespace collisions
 		return !(r1_x0 >= r2_x1 || r1_x1 <= r2_x0 || r1_y0 >= r2_y1 || r1_y1 <= r2_y0);
 	}
 
+	inline bool SegmentToSegment(Segment& s1, Segment& s2)
+	{
+		helpers::Line a = helpers::Line(s1);
+		helpers::Line b = helpers::Line(s2);
+
+		Point intersection = a.Intersect(b);
+
+		if (isnan(intersection.X()))
+			return false;
+
+		if (intersection == s1.Position() || intersection == s1.EndPoint() ||
+			intersection == s2.Position() || intersection == s2.EndPoint())
+			return false;
+
+		if (isinf(intersection.X()))
+			return helpers::CollinearSegmentsOverlap(s1, s2);
+
+		return s1.Contains(intersection) && s2.Contains(intersection);
+	}
+
 	// Resolve collision to touch two shapes.
 	// The return value is a point lying on the contact surface.
 	namespace contact
@@ -28,7 +140,7 @@ namespace collisions
 		namespace
 		{
 			// Return time of collision
-			inline double PointToPoint(double a, double b, double a_v)
+			double PointToPoint(double a, double b, double a_v)
 			{
 				if (a == b)
 					return 0;
@@ -39,7 +151,7 @@ namespace collisions
 				return (b - a) / a_v;
 			}
 
-			inline double RangeToRange(double a0, double a1, double b0, double b1, double a_v)
+			double RangeToRange(double a0, double a1, double b0, double b1, double a_v)
 			{
 				// If ranges are intersecting from the beggining return 0 time
 				if (!(a0 >= b1 || a1 <= b0))
@@ -55,7 +167,7 @@ namespace collisions
 				return fmin(left_collision, right_collision);
 			}
 
-			inline Point RectangleToRectangleConnection(Rectangle& r1, Rectangle& r2)
+			Point RectangleToRectangleConnection(Rectangle& r1, Rectangle& r2)
 			{
 				double r1_x0 = r1.Position().X() - r1.Width() / 2;
 				double r1_x1 = r1.Position().X() + r1.Width() / 2;
@@ -81,7 +193,7 @@ namespace collisions
 				return Point(connection_x, connection_y);
 			}
 
-			inline double Round(double value, double precision = 1.0)
+			double Round(double value, double precision = 1.0)
 			{
 				return std::round(value / precision) * precision;
 			}

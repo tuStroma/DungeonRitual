@@ -5,6 +5,9 @@
 #include "../Display/DisplayParameters.h"
 #include "GameObject.h"
 #include "Actor.h"
+#include "Slope.h"
+
+#include "ObjectCollisions.h"
 
 class Match
 {
@@ -15,11 +18,15 @@ private:
 	Actor player;
 
 	GameObject walls[5];
+	Slope slopes[2];
 
 	double v_x = 1;
 	double v_y = 0;
 
+	// Time
 	int t1 = 0, t2 = 0;
+	int time_count = 0;
+	int frame_count;
 
 	// Camera
 	Point camera = Point(0, 0);

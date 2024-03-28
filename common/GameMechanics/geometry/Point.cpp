@@ -9,3 +9,8 @@ void Point::Move(Point p)
 	this->x += p.X();
 	this->y += p.Y();
 }
+
+bool Point::operator==(const Point& p)
+{
+	return this->x == p.x && this->y == p.y;
+}

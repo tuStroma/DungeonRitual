@@ -19,5 +19,7 @@ public:
 
 	void Set(Point p) { x = p.x; y = p.y; }
 	void Move(Point p);
+
+	bool operator==(const Point& p);
 };
 

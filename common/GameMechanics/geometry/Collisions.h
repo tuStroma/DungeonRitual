@@ -123,9 +123,9 @@ namespace collisions
 		if (isnan(intersection.X()))
 			return false;
 
-		if (intersection == s1.Position() || intersection == s1.EndPoint() ||
-			intersection == s2.Position() || intersection == s2.EndPoint())
-			return false;
+		//if (intersection == s1.Position() || intersection == s1.EndPoint() ||
+		//	intersection == s2.Position() || intersection == s2.EndPoint())
+		//	return false;
 
 		if (isinf(intersection.X()))
 			return helpers::CollinearSegmentsOverlap(s1, s2);

@@ -61,6 +61,25 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 	{
 		Slope* slope = dynamic_cast<Slope*>(floor);
 
+		// Slope top
+		double feet_y = Position().Y() - getRectangle()->Height() / 2;
+		Point slope_top = s->Vector().Y() >=0 ? s->EndPoint() : s->Position();
+
+		if (feet_y >= slope_top.Y())
+		{
+			if (moving_left && !moving_right) vx = -speed;
+			else if (!moving_left && moving_right) vx = speed;
+
+			shape->MoveBy(Point(vx * t, 0));
+
+			// Check if still standing on
+			if (fabs(slope_top.X() - this->Position().X()) >= this->getRectangle()->Width() / 2)
+				standing_on = nullptr;
+
+			return;
+		}
+
+		// Slope body
 		if (moving_left && !moving_right)
 		{
 			vx = -speed * slope->HorisontalMove();

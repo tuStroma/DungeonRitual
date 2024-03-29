@@ -18,6 +18,11 @@ public:
 		return Point(position.X() + vector.X(), position.Y() + vector.Y());
 	}
 
+	Point LeftPoint()	{ return vector.X() > 0 ? Position() : EndPoint(); }
+	Point RightPoint()	{ return vector.X() > 0 ? EndPoint() : Position(); }
+	Point LowerPoint()	{ return vector.Y() > 0 ? Position() : EndPoint(); }
+	Point UpperPoint()	{ return vector.Y() > 0 ? EndPoint() : Position(); }
+
 	// Geometry
 	bool Contains(Point p) // Assumes that p lies on the same line as segment
 	{

@@ -34,7 +34,8 @@ namespace object_collisions
 				return Point(NAN, NAN);
 
 			// Move actor
-			actor.GetShape()->MoveTo(actor.GetShape()->PreviousPosition());
+			if (actor.getRectangle()->Down() < slope.getSegment()->UpperPoint().Y())
+				actor.GetShape()->MoveTo(actor.GetShape()->PreviousPosition());
 
 			// Calculate collision point
 			double actor_feet_y = actor.Position().Y() - actor.getRectangle()->Height() / 2;

@@ -14,4 +14,9 @@ public:
 	// Getters
 	double Width() { return width; }
 	double Height() { return height; }
+
+	double Left()	{ return position.X() - width / 2; }
+	double Right()	{ return position.X() + width / 2; }
+	double Down()	{ return position.Y() - height / 2; }
+	double Up()		{ return position.Y() + height / 2; }
 };

@@ -18,7 +18,7 @@ private:
 	Actor player;
 
 	GameObject walls[5];
-	Slope slopes[2];
+	Slope slopes[3];
 
 	double v_x = 1;
 	double v_y = 0;

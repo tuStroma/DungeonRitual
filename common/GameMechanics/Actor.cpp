@@ -73,7 +73,13 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 			shape->MoveBy(Point(vx * t, 0));
 
 			// Check if still standing on
-			if (fabs(slope_top.X() - this->Position().X()) >= this->getRectangle()->Width() / 2)
+			if (slope->isHorisontal())
+			{
+				if (this->getRectangle()->Right() <= slope->getSegment()->LeftPoint().X() ||
+					this->getRectangle()->Left() >= slope->getSegment()->RightPoint().X())
+					standing_on = nullptr;
+			}
+			else if (fabs(slope_top.X() - this->Position().X()) >= this->getRectangle()->Width() / 2)
 				standing_on = nullptr;
 
 			return;
@@ -118,7 +124,7 @@ void Actor::ResolveCollision(Point connection, GameObject* obj)
 	double lower_edge = shape->Position().Y() - ((Rectangle*)shape)->Height() / 2;
 	double higher_edge = shape->Position().Y() + ((Rectangle*)shape)->Height() / 2;
 
-	if (con_y == lower_edge)
+	if (con_y <= lower_edge)
 	{
 		standing_on = obj;
 		vertical_speed = 0;

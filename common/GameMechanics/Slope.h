@@ -1,5 +1,8 @@
 #pragma once
 #include "GameObject.h"
+#include "geometry/Figures.h"
+
+
 class Slope : public GameObject
 {
 private:
@@ -54,6 +57,15 @@ public:
 		Point vector = getSegment()->Vector();
 
 		return vector.X() > 0 != vector.Y() > 0;
+	}
+
+	double heightAt(double x)
+	{
+		if (isVertical())
+			return getSegment()->UpperPoint().Y();
+
+		Line slope_line = Line(*getSegment());
+		return slope_line.Y(x);
 	}
 };
 

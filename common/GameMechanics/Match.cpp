@@ -86,7 +86,7 @@ void Match::Update()
 		Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)player.GetShape(), *(Rectangle*)walls[i].GetShape());
 		player.ResolveCollision(connection, &walls[i]);
 	}
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		Point connection = object_collisions::contact::ActorToSlope(player, slopes[i]);
 		player.ResolveCollision(connection, &slopes[i]);
@@ -110,7 +110,7 @@ void Match::Display()
 	for (int i = 0; i < 5; i++)
 		DrawObject(&walls[i], screen, blue);
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 		DrawObject(&slopes[i], screen, blue);
 	
 	// Draw player
@@ -137,6 +137,7 @@ Match::Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex)
 
 	slopes[0] = Slope(new Segment(Point(2, -2), Point(4.5, -4.5)));
 	slopes[1] = Slope(new Segment(Point(-2, -2), Point(-4.5, -4.5)));
+	slopes[2] = Slope(new Segment(Point(-2, 2), Point(4, 0)));
 }
 
 void Match::Start()

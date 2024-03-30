@@ -47,11 +47,13 @@ void Match::Input()
 			if (event->key.keysym.sym == SDLK_ESCAPE) quit = 1;
 			else if (event->key.keysym.sym == SDLK_a) player.MoveLeft(true);
 			else if (event->key.keysym.sym == SDLK_d) player.MoveRight(true);
+			else if (event->key.keysym.sym == SDLK_s) player.MoveDown(true);
 			else if (event->key.keysym.sym == SDLK_SPACE) player.Jump(true);
 			break;
 		case SDL_KEYUP:
 			if (event->key.keysym.sym == SDLK_a) player.MoveLeft(false);
 			else if (event->key.keysym.sym == SDLK_d) player.MoveRight(false);
+			else if (event->key.keysym.sym == SDLK_s) player.MoveDown(false);
 			else if (event->key.keysym.sym == SDLK_SPACE) player.Jump(false);
 			break;
 		case SDL_QUIT:
@@ -86,6 +88,8 @@ void Match::Update()
 		Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)player.GetShape(), *(Rectangle*)walls[i].GetShape());
 		player.ResolveCollision(connection, &walls[i]);
 	}
+
+	// Slopes
 	for (int i = 0; i < 3; i++)
 	{
 		Point connection = object_collisions::contact::ActorToSlope(player, slopes[i]);

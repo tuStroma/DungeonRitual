@@ -6,19 +6,34 @@
 
 namespace object_collisions
 {
+	namespace helpers
+	{
+		inline bool ActorWasBelowSlope(Actor& actor, Slope& slope)
+		{
+			Line slope_line = Line(*slope.getSegment());
+			double foot_x = actor.GetShape()->PreviousPosition().X();
+			double actor_half_width = actor.getRectangle()->Width() / 2;
+			foot_x += slope.isRightSlope() ? actor_half_width : -actor_half_width;
+
+			double foot_y = actor.getRectangle()->PreviousPosition().Y() - actor.getRectangle()->Height() / 2;
+
+			return foot_y < slope.heightAt(foot_x);
+		}
+	} // helpers
+
 	inline bool ActorToSlope(Actor& actor, Slope& slope)
 	{
+		if (actor.isAvoidingSlopes())
+			return false;
+
 		Rectangle* rectangle = actor.getRectangle();
 		Segment* segment = slope.getSegment();
 
 		// Check collision from below
-		Line slope_line = Line(*slope.getSegment());
-		double foot_x = slope.isRightSlope() ? actor.getRectangle()->Right() : actor.getRectangle()->Left();
-
-		if (actor.getRectangle()->PreviousPosition().Y() - actor.getRectangle()->Height() / 2 <
-			slope.heightAt(foot_x))
+		if (helpers::ActorWasBelowSlope(actor, slope))
 			return false;
 
+		// Horisontal collision
 		if (slope.isHorisontal())
 		{
 			Point left_start = Point(rectangle->Left(), rectangle->Up());

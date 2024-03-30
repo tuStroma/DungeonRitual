@@ -61,6 +61,10 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 	{
 		Slope* slope = dynamic_cast<Slope*>(floor);
 
+		// Check avoiding slopes
+		if (moving_down)
+			standing_on = nullptr;
+
 		// Slope top
 		double feet_y = Position().Y() - getRectangle()->Height() / 2;
 		Point slope_top = s->Vector().Y() >=0 ? s->EndPoint() : s->Position();

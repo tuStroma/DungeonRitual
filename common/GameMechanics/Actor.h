@@ -17,6 +17,7 @@ private:
 	// Actor state
 	bool moving_left = false;
 	bool moving_right = false;
+	bool moving_down = false;
 	bool jumping = false;
 	GameObject* standing_on = nullptr;
 public:
@@ -27,7 +28,11 @@ public:
 
 	void MoveLeft(bool move)  { moving_left = move; }
 	void MoveRight(bool move) { moving_right = move; }
+	void MoveDown(bool move)  { moving_down = move; }
 	void Jump(bool jump);
+
+	// Movement getters
+	bool isAvoidingSlopes() { return moving_down; }
 
 	void Move(double t);
 	void WalkOnObject(GameObject* floor, double t);

@@ -23,7 +23,7 @@ namespace object_collisions
 
 	inline bool ActorToSlope(Actor& actor, Slope& slope)
 	{
-		if (actor.isAvoidingSlopes())
+		if (actor.isAvoidingSlopes() && slope.isPenetrable())
 			return false;
 
 		Rectangle* rectangle = actor.getRectangle();

@@ -62,12 +62,14 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 		Slope* slope = dynamic_cast<Slope*>(floor);
 
 		// Check avoiding slopes
-		if (moving_down)
+		if (moving_down && slope->isPenetrable())
 			standing_on = nullptr;
 
 		// Slope top
 		double feet_y = Position().Y() - getRectangle()->Height() / 2;
 		Point slope_top = s->Vector().Y() >=0 ? s->EndPoint() : s->Position();
+
+
 
 		if (feet_y >= slope_top.Y())
 		{
@@ -83,7 +85,7 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 					this->getRectangle()->Left() >= slope->getSegment()->RightPoint().X())
 					standing_on = nullptr;
 			}
-			else if (fabs(slope_top.X() - this->Position().X()) >= this->getRectangle()->Width() / 2)
+			else if (fabs(slope_top.X() - this->Position().X()) > this->getRectangle()->Width() / 2)
 				standing_on = nullptr;
 
 			return;

@@ -141,7 +141,8 @@ Match::Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex)
 
 	slopes[0] = Slope(new Segment(Point(2, -2), Point(4.5, -4.5)));
 	slopes[1] = Slope(new Segment(Point(-2, -2), Point(-4.5, -4.5)));
-	slopes[2] = Slope(new Segment(Point(-2, 2), Point(4, 0)));
+	//slopes[2] = Slope(new Segment(Point(-2, 2), Point(4, 0)));
+	slopes[2] = Slope(new Segment(Point(-6.5, -6.5), Point(-3, 3)), false);
 }
 
 void Match::Start()

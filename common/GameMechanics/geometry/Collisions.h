@@ -115,16 +115,13 @@ namespace collisions
 				double r2_y0 = r2.Position().Y() - r2.Height() / 2;
 				double r2_y1 = r2.Position().Y() + r2.Height() / 2;
 
-				// Calculate distances between rectangle edges
-				double d1_x = fabs(r1_x0 - r2_x1);
-				double d2_x = fabs(r1_x1 - r2_x0);
+				double left = fmax(r1_x0, r2_x0);
+				double right = fmin(r1_x1, r2_x1);
+				double down = fmax(r1_y0, r2_y0);
+				double up = fmin(r1_y1, r2_y1);
 
-				double d1_y = fabs(r1_y0 - r2_y1);
-				double d2_y = fabs(r1_y1 - r2_y0);
-
-				// Take middle point from smaller distance
-				double connection_x = d1_x < d2_x ? (r1_x0 + r2_x1) / 2 : (r1_x1 + r2_x0) / 2;
-				double connection_y = d1_y < d2_y ? (r1_y0 + r2_y1) / 2 : (r1_y1 + r2_y0) / 2;
+				double connection_x = (left + right) / 2;
+				double connection_y = (down + up) / 2;
 
 				return Point(connection_x, connection_y);
 			}

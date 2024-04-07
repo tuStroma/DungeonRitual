@@ -9,10 +9,12 @@ private:
 	double vertical_movement_component = 0;
 	double horisontal_movement_component = 0;
 
+	bool is_penetrable = true;
+
 public:
 	Slope() {}
-	Slope(Segment* shape)
-		:GameObject(shape)
+	Slope(Segment* shape, bool penetrable = true)
+		:GameObject(shape), is_penetrable(penetrable)
 	{
 		double dx = fabs(shape->Vector().X());
 		double dy = fabs(shape->Vector().Y());
@@ -58,6 +60,8 @@ public:
 
 		return vector.X() > 0 != vector.Y() > 0;
 	}
+
+	bool isPenetrable() { return is_penetrable; }
 
 	double heightAt(double x)
 	{

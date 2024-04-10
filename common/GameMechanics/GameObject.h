@@ -12,7 +12,10 @@ public:
 	GameObject(Shape* shape)
 		:shape(shape)
 	{}
-	virtual ~GameObject() {}
+	virtual ~GameObject()
+	{
+		delete shape;
+	}
 
 	Point Position() { return shape->Position(); }
 	Shape* GetShape() { return shape; }

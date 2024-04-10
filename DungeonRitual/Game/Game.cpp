@@ -17,5 +17,6 @@ void Game::Launch()
 		SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	match = new Match(screen, renderer, scrtex);
+	maps::BasicTest(match);
 	match->Start();
 }

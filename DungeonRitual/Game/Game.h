@@ -2,6 +2,7 @@
 #include <SDL.h>
 
 #include "../../common/GameMechanics/Match.h"
+#include "../../common/GameMechanics/MapSetups/MapSetups.h"
 
 class Game
 {

@@ -45,16 +45,16 @@ void Match::Input()
 		switch (event->type) {
 		case SDL_KEYDOWN:
 			if (event->key.keysym.sym == SDLK_ESCAPE) quit = 1;
-			else if (event->key.keysym.sym == SDLK_a) player.MoveLeft(true);
-			else if (event->key.keysym.sym == SDLK_d) player.MoveRight(true);
-			else if (event->key.keysym.sym == SDLK_s) player.MoveDown(true);
-			else if (event->key.keysym.sym == SDLK_SPACE) player.Jump(true);
+			else if (event->key.keysym.sym == SDLK_a) player->MoveLeft(true);
+			else if (event->key.keysym.sym == SDLK_d) player->MoveRight(true);
+			else if (event->key.keysym.sym == SDLK_s) player->MoveDown(true);
+			else if (event->key.keysym.sym == SDLK_SPACE) player->Jump(true);
 			break;
 		case SDL_KEYUP:
-			if (event->key.keysym.sym == SDLK_a) player.MoveLeft(false);
-			else if (event->key.keysym.sym == SDLK_d) player.MoveRight(false);
-			else if (event->key.keysym.sym == SDLK_s) player.MoveDown(false);
-			else if (event->key.keysym.sym == SDLK_SPACE) player.Jump(false);
+			if (event->key.keysym.sym == SDLK_a) player->MoveLeft(false);
+			else if (event->key.keysym.sym == SDLK_d) player->MoveRight(false);
+			else if (event->key.keysym.sym == SDLK_s) player->MoveDown(false);
+			else if (event->key.keysym.sym == SDLK_SPACE) player->Jump(false);
 			break;
 		case SDL_QUIT:
 			quit = 1;
@@ -80,24 +80,24 @@ void Match::Update()
 	//// Update Game state
 
 	// Move all objects
-	player.Move(delta);
+	player->Move(delta);
 
 	// Check colisions
-	for (int i = 0; i < 5; i++)
+	for (GameObject* wall : walls)
 	{
-		Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)player.GetShape(), *(Rectangle*)walls[i].GetShape());
-		player.ResolveCollision(connection, &walls[i]);
+		Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)player->GetShape(), *(Rectangle*)wall->GetShape());
+		player->ResolveCollision(connection, wall);
 	}
 
 	// Slopes
-	for (int i = 0; i < 3; i++)
+	for (Slope* slope : slopes)
 	{
-		Point connection = object_collisions::contact::ActorToSlope(player, slopes[i]);
-		player.ResolveCollision(connection, &slopes[i]);
+		Point connection = object_collisions::contact::ActorToSlope(*player, *slope);
+		player->ResolveCollision(connection, slope);
 	}
 
 	// Camera position
-	camera = player.Position();
+	camera = player->Position();
 }
 
 void Match::Display()
@@ -111,14 +111,14 @@ void Match::Display()
 
 	// Draw
 	// Draw environment
-	for (int i = 0; i < 5; i++)
-		DrawObject(&walls[i], screen, blue);
+	for (GameObject* wall : walls)
+		DrawObject(wall, screen, blue);
 
-	for (int i = 0; i < 3; i++)
-		DrawObject(&slopes[i], screen, blue);
+	for (Slope* slope : slopes)
+		DrawObject(slope, screen, blue);
 	
 	// Draw player
-	DrawObject(&player, screen, red);
+	DrawObject(player, screen, red);
 
 	// Display
 	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
@@ -130,6 +130,7 @@ void Match::Display()
 Match::Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex)
 	:screen(screen), renderer(renderer), scrtex(scrtex), event(new SDL_Event())
 {
+	/*/
 	player = Actor(new Rectangle(Point(0, 0), 1, 2));
 
 	walls[0] = GameObject(new Rectangle(Point(0, -7.0), 20, 1));
@@ -141,8 +142,23 @@ Match::Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex)
 
 	slopes[0] = Slope(new Segment(Point(2, -2), Point(4.5, -4.5)));
 	slopes[1] = Slope(new Segment(Point(-2, -2), Point(-4.5, -4.5)));
-	//slopes[2] = Slope(new Segment(Point(-2, 2), Point(4, 0)));
-	slopes[2] = Slope(new Segment(Point(-6.5, -6.5), Point(-3, 3)), false);
+	slopes[2] = Slope(new Segment(Point(-2, 2), Point(4, 0)));
+	//slopes[2] = Slope(new Segment(Point(-6.5, -6.5), Point(-3, 3)), false);
+	//*/
+}
+
+void Match::addObject(GameObject* object)
+{
+	if (Slope* slope = dynamic_cast<Slope*>(object))
+		slopes.push_back(slope);
+	else
+		walls.push_back(object);
+}
+
+void Match::addActor(Actor* actor, bool is_player)
+{
+	if (is_player)
+		player = actor;
 }
 
 void Match::Start()

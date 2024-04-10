@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 
 #include "../Display/SDL_display.h"
 #include "../Display/DisplayParameters.h"
@@ -15,10 +16,10 @@ private:
 	bool quit = false;
 
 	// Game status
-	Actor player;
+	Actor* player = nullptr;
 
-	GameObject walls[5];
-	Slope slopes[3];
+	std::vector<GameObject*> walls;
+	std::vector<Slope*> slopes;
 
 	double v_x = 1;
 	double v_y = 0;
@@ -26,7 +27,7 @@ private:
 	// Time
 	int t1 = 0, t2 = 0;
 	int time_count = 0;
-	int frame_count;
+	int frame_count = 0;
 
 	// Camera
 	Point camera = Point(0, 0);
@@ -50,6 +51,9 @@ private:
 
 public:
 	Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex);
+
+	void addObject(GameObject* object);
+	void addActor(Actor* actor, bool is_player);
 
 	void Start();
 };

@@ -2,22 +2,21 @@
 
 int Match::posToCameraX(double x)
 {
-	return (int) ((x - camera.X()) * DISTANCE_TO_PIXELS + SCREEN_WIDTH / 2);
+	return (int) ((x - camera.X()) * DISTANCE_TO_PIXELS);
 }
 
 int Match::posToCameraY(double y)
 {
-	return (int) ((-y + camera.Y()) * DISTANCE_TO_PIXELS + SCREEN_HEIGHT / 2);
+	return (int) ((y - camera.Y()) * DISTANCE_TO_PIXELS);
 }
 
-void Match::DrawObject(GameObject* obj, SDL_Surface* surface, Uint32 color)
+void Match::DrawObject(GameObject* obj, Uint32 color)
 {
 	Shape* shape = obj->GetShape();
 
 	if (Rectangle* r = dynamic_cast<Rectangle*>(shape))
 	{
-		display::DrawRectangleCentered(	screen,
-										posToCameraX(obj->Position().X()),
+		window->DrawRectangleCentered(	posToCameraX(obj->Position().X()),
 										posToCameraY(obj->Position().Y()),
 										(int)(r->Width() * DISTANCE_TO_PIXELS),
 										(int)(r->Height() * DISTANCE_TO_PIXELS),
@@ -26,11 +25,10 @@ void Match::DrawObject(GameObject* obj, SDL_Surface* surface, Uint32 color)
 	else if (Segment* s = dynamic_cast<Segment*>(shape))
 	{
 		for (int i = 0; i < 5; i++)
-			display::DrawLine(	surface,
-								posToCameraX(s->Position().X()),
-								posToCameraY(s->Position().Y()) + i,
+			window->DrawLine(	posToCameraX(s->Position().X()),
+								posToCameraY(s->Position().Y()) - i,
 								posToCameraX(s->EndPoint().X()),
-								posToCameraY(s->EndPoint().Y()) + i,
+								posToCameraY(s->EndPoint().Y()) - i,
 								color);
 	}
 	else
@@ -102,50 +100,31 @@ void Match::Update()
 
 void Match::Display()
 {
-	int red = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
-	int blue = SDL_MapRGB(screen->format, 0x00, 0x00, 0xFF);
-	int black = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
+	int red = window->getColor(0xFF, 0x00, 0x00);
+	int blue = window->getColor(0x00, 0x00, 0xFF);
+	int black = window->getColor(0x00, 0x00, 0x00);
 
 	// Clear frame
-	SDL_FillRect(screen, NULL, black);
+	window->ClearFrame();
 
 	// Draw
 	// Draw environment
 	for (GameObject* wall : walls)
-		DrawObject(wall, screen, blue);
+		DrawObject(wall, blue);
 
 	for (Slope* slope : slopes)
-		DrawObject(slope, screen, blue);
+		DrawObject(slope, blue);
 	
 	// Draw player
-	DrawObject(player, screen, red);
+	DrawObject(player, red);
 
 	// Display
-	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
-	//SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, scrtex, NULL, NULL);
-	SDL_RenderPresent(renderer);
+	window->DisplayFrame();
 }
 
-Match::Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex)
-	:screen(screen), renderer(renderer), scrtex(scrtex), event(new SDL_Event())
-{
-	/*/
-	player = Actor(new Rectangle(Point(0, 0), 1, 2));
-
-	walls[0] = GameObject(new Rectangle(Point(0, -7.0), 20, 1));
-	walls[1] = GameObject(new Rectangle(Point(0, 7.0), 20, 1));
-	walls[2] = GameObject(new Rectangle(Point(10.0, 0), 1, 14));
-	walls[3] = GameObject(new Rectangle(Point(-10.0, 0), 1, 14));
-	walls[4] = GameObject(new Rectangle(Point(0, -2.5), 4, 1));
-
-
-	slopes[0] = Slope(new Segment(Point(2, -2), Point(4.5, -4.5)));
-	slopes[1] = Slope(new Segment(Point(-2, -2), Point(-4.5, -4.5)));
-	slopes[2] = Slope(new Segment(Point(-2, 2), Point(4, 0)));
-	//slopes[2] = Slope(new Segment(Point(-6.5, -6.5), Point(-3, 3)), false);
-	//*/
-}
+Match::Match(Window* window)
+	:window(window), event(new SDL_Event())
+{}
 
 void Match::addObject(GameObject* object)
 {

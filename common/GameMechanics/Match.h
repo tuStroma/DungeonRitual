@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../Display/SDL_display.h"
+#include "../Display/Window.h"
 #include "../Display/DisplayParameters.h"
 #include "GameObject.h"
 #include "Actor.h"
@@ -36,11 +36,9 @@ private:
 	int posToCameraY(double y);
 
 	// Display
-	SDL_Surface* screen;
-	SDL_Renderer* renderer;
-	SDL_Texture* scrtex;
+	Window* window;
 
-	void DrawObject(GameObject* obj, SDL_Surface* surface, Uint32 color);
+	void DrawObject(GameObject* obj, Uint32 color);
 
 	// Controle
 	SDL_Event* event;
@@ -50,7 +48,7 @@ private:
 	void Display();
 
 public:
-	Match(SDL_Surface* screen, SDL_Renderer* renderer, SDL_Texture* scrtex);
+	Match(Window* window);
 
 	void addObject(GameObject* object);
 	void addActor(Actor* actor, bool is_player);

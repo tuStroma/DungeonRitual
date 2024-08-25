@@ -1,0 +1,13 @@
+Roadmap
+- Map description in XML
+- Development helper project
+  - Printing maps
+- Sprites
+  - Basic printing
+  - Animation
+- Abstraction in actor control
+  - Separating UserControlet
+  - Creating basic NPC movement controler
+- Game server
+  - Game lobby & Matchmaking
+  - Client main

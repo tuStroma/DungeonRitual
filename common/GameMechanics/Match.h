@@ -6,7 +6,6 @@
 #include "../Display/DisplayParameters.h"
 #include "GameObject.h"
 #include "Actor.h"
-#include "Slope.h"
 
 #include "ObjectCollisions.h"
 

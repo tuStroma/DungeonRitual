@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GameObjects>
+  <Wall left	="-10"
+		right	="10"
+		up		="-6.5"
+		down	="-7.5"/>
+		
+  <Wall left	="-10"
+		right	="10"
+		up		="7.5"
+		down	="6.5"/>
+		
+  <Wall left	="9.5"
+		right	="10.5"
+		up		="7"
+		down	="-7"/>
+		
+  <Wall left	="-10.5"
+		right	="-9.5"
+		up		="7"
+		down	="-7"/>
+		
+  <Wall left	="-2"
+		right	="2"
+		up		="-2"
+		down	="-3"/>
+  
+  <Slope begin_x="2"
+		 begin_y="-2"
+		 end_x="6.5"
+		 end_y="-6.5"
+		 penetrable="1"/>
+  
+  <Slope begin_x="-2"
+		 begin_y="-2"
+		 end_x="-6.5"
+		 end_y="-6.5"
+		 penetrable="1"/>
+  
+  <Slope begin_x="-2"
+		 begin_y="2"
+		 end_x="2"
+		 end_y="2"
+		 penetrable="1"/>
+</GameObjects> 

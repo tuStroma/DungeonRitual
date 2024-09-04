@@ -3,7 +3,7 @@
 
 #include "../../common/Display/Window.h"
 #include "../../common/GameMechanics/Match.h"
-#include "../../common/GameMechanics/MapSetups/MapSetups.h"
+#include "../../common/GameMechanics/AssetLoader/MapLoader.h"
 
 class Game
 {

@@ -42,4 +42,10 @@
 		 end_x="2"
 		 end_y="2"
 		 penetrable="1"/>
+
+  <Actor	position_x	="0"
+			position_y	="0"
+			width		="1"
+			height		="2"
+			is_player	="true"/>
 </GameObjects> 

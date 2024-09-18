@@ -27,6 +27,40 @@ private:
 		return (int)(screen_height / 2 - y);
 	}
 
+
+	static void SetSurfaceColor(SDL_Surface* surface, int x, int y, Uint32 color)
+	{
+		int bpp = surface->format->BytesPerPixel;
+		Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
+		*(Uint32*)p = color;
+	}
+
+	static Uint32 GetSurfaceColor(SDL_Surface* surface, int x, int y)
+	{
+		int bpp = surface->format->BytesPerPixel;
+		Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
+		return *(Uint32*)p;
+	}
+
+	// Mixes 2 colors by a given ratio
+	// Ratio is a number in range 0-255
+	// Higher ratio values favours 'a' in cost of 'b' in the result
+	Uint32 MixColors(Uint32 a, Uint32 b, int ratio)
+	{
+		Uint8 a_red, b_red, result_red,
+			  a_green, b_green, result_green,
+			  a_blue, b_blue, result_blue;
+
+		SDL_GetRGB(a, surface->format, &a_red, &a_green, &a_blue);
+		SDL_GetRGB(b, surface->format, &b_red, &b_green, &b_blue);
+
+		result_red = (a_red * ratio + b_red * (255 - ratio)) / 255;
+		result_green = (a_green * ratio + b_green * (255 - ratio)) / 255;
+		result_blue = (a_blue * ratio + b_blue * (255 - ratio)) / 255;
+		return SDL_MapRGB(surface->format, result_red, result_green, result_blue);
+	}
+
+
 public:
 	Window(int width, int height)
 		:screen_width(width), screen_height(height)
@@ -46,7 +80,6 @@ public:
 		black = SDL_MapRGB(surface->format, 0x00, 0x00, 0x00);
 	}
 
-
 	// Draw
 	void DrawPixel(int x, int y, Uint32 color)
 	{
@@ -56,9 +89,15 @@ public:
 		if (x < 0 || y < 0 || x >= surface->w || y >= surface->h)
 			return;
 
-		int bpp = surface->format->BytesPerPixel;
-		Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
-		*(Uint32*)p = color;
+		Uint8 r, g, b, a;
+		SDL_GetRGBA(color, surface->format, &r, &g, &b, &a);
+		if (a != 255)
+		{
+			Uint32 background = GetSurfaceColor(surface, x, y);
+			color = MixColors(color, background, a);
+		}
+
+		SetSurfaceColor(surface, x, y, color);
 	};
 	void DrawLine(int x, int y, int length, int dx, int dy, Uint32 color)
 	{
@@ -125,6 +164,23 @@ public:
 	void DrawRectangleCentered(int x, int y, int w, int h, Uint32 color)
 	{
 		DrawRectangle(x - w / 2, y - h / 2, x + w / 2, y + h / 2, color);
+	}
+	void DrawSprite(SDL_Surface* sprite, int left, int right, int up, int down)
+	{
+		int width = right - left;
+		int height = up - down;
+
+		for (int x = left; x < right; x += 1)
+		{
+			int sprite_x = (x - left) * sprite->w / width;
+			for (int y = down; y < up; y += 1)
+			{
+				// Sprites, as well as screen, are starting in top left corner, hence the revercing y axis
+				int sprite_y = (up - y) * sprite->h / height; 
+				Uint32 color = GetSurfaceColor(sprite, sprite_x, sprite_y);
+				DrawPixel(x, y, color);
+			}
+		}
 	}
 
 	void ClearFrame()

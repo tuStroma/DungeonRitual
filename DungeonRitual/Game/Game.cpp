@@ -7,7 +7,6 @@ Game::Game()
 void Game::Launch()
 {
 	match = new Match(window);
-	//maps::BasicTest(match);
 	MapLoader::Load(match, "test");
 	match->Start();
 }

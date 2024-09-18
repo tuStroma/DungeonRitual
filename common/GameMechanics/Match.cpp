@@ -37,6 +37,15 @@ void Match::DrawObject(GameObject* obj, Uint32 color)
 	}
 }
 
+void Match::DrawSprite(SDL_Surface* sprite, Rectangle* rectangle)
+{
+	window->DrawSprite(sprite,
+		posToCameraX(rectangle->Left()),
+		posToCameraX(rectangle->Right()),
+		posToCameraY(rectangle->Up()),
+		posToCameraY(rectangle->Down()));
+}
+
 void Match::Input()
 {
 	while (SDL_PollEvent(event)) {
@@ -116,7 +125,8 @@ void Match::Display()
 		DrawObject(slope, blue);
 	
 	// Draw player
-	DrawObject(player, red);
+	//DrawObject(player, red);
+	DrawSprite(player_sprite, player->getRectangle());
 
 	// Display
 	window->DisplayFrame();
@@ -124,7 +134,12 @@ void Match::Display()
 
 Match::Match(Window* window)
 	:window(window), event(new SDL_Event())
-{}
+{
+	player_sprite = SDL_LoadBMP("../common/Assets/tests/player.bmp");
+	if (player_sprite == NULL) {
+		printf("player_sprite loading error: %s\n", SDL_GetError());
+	};
+}
 
 void Match::addObject(GameObject* object)
 {

@@ -126,7 +126,7 @@ void Match::Display()
 	
 	// Draw player
 	//DrawObject(player, red);
-	DrawSprite(player_sprite, player->getRectangle());
+	DrawSprite(player_animation->GetSprite(), player->getRectangle());
 
 	// Display
 	window->DisplayFrame();
@@ -135,8 +135,8 @@ void Match::Display()
 Match::Match(Window* window)
 	:window(window), event(new SDL_Event())
 {
-	player_sprite = SDL_LoadBMP("../common/Assets/tests/player.bmp");
-	if (player_sprite == NULL) {
+	player_animation = new Animation("Players/test", "Idle"); //SDL_LoadBMP("../common/Assets/tests/player.bmp");
+	if (player_animation == NULL) {
 		printf("player_sprite loading error: %s\n", SDL_GetError());
 	};
 }

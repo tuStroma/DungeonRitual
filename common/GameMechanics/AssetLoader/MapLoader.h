@@ -3,10 +3,6 @@
 #include <rapidxml_utils.hpp>
 #include <list>
 
-#include <fstream>
-#include <filesystem>
-namespace fs = std::filesystem;
-
 #include "../Match.h"
 #include "../Slope.h"
 
@@ -106,6 +102,7 @@ private:
             node = node->next_sibling();
         }
     }
+
 public:
 	static void Load(Match* match, std::string map_name)
 	{

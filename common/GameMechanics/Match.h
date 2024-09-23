@@ -4,6 +4,7 @@
 
 #include "../Display/Window.h"
 #include "../Display/DisplayParameters.h"
+#include "../Display/Animation.h"
 #include "GameObject.h"
 #include "Actor.h"
 
@@ -16,7 +17,7 @@ private:
 
 	// Game status
 	Actor* player = nullptr;
-	SDL_Surface* player_sprite;
+	Animation* player_animation;
 
 	std::vector<GameObject*> walls;
 	std::vector<Slope*> slopes;

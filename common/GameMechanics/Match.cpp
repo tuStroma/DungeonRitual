@@ -46,6 +46,21 @@ void Match::DrawSprite(SDL_Surface* sprite, Rectangle* rectangle)
 		posToCameraY(rectangle->Down()));
 }
 
+void Match::DrawSpriteCentered(SDL_Surface* sprite, double x, double y, double paralax)
+{
+	double width = sprite->w / PIXELS_IN_METER;
+	double height = sprite->h / PIXELS_IN_METER;
+
+	x = camera.X() + (x - camera.X()) / paralax;
+	y = camera.Y() + (y - camera.Y()) / paralax;
+
+	window->DrawSprite(sprite,
+		posToCameraX(x - width / 2),
+		posToCameraX(x + width / 2),
+		posToCameraY(y + height / 2),
+		posToCameraY(y - height / 2));
+}
+
 void Match::Input()
 {
 	while (SDL_PollEvent(event)) {
@@ -126,6 +141,8 @@ void Match::Display()
 	
 	// Draw player
 	//DrawObject(player, red);
+	DrawSpriteCentered(test, 0, 0);
+	DrawSpriteCentered(test, 0, 0, 2);
 	DrawSprite(player_animation->GetSprite(), player->getRectangle());
 
 	// Display
@@ -135,9 +152,10 @@ void Match::Display()
 Match::Match(Window* window)
 	:window(window), event(new SDL_Event())
 {
-	player_animation = new Animation("Players/test", "Idle"); //SDL_LoadBMP("../common/Assets/tests/player.bmp");
-	if (player_animation == NULL) {
-		printf("player_sprite loading error: %s\n", SDL_GetError());
+	player_animation = new Animation("Players/test", "Idle"); 
+	test = SDL_LoadBMP("../common/Assets/tests/player.bmp");
+	if (test == NULL) {
+		printf("test loading error: %s\n", SDL_GetError());
 	};
 }
 

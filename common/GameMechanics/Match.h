@@ -18,6 +18,7 @@ private:
 	// Game status
 	Actor* player = nullptr;
 	Animation* player_animation;
+	SDL_Surface* test;
 
 	std::vector<GameObject*> walls;
 	std::vector<Slope*> slopes;
@@ -41,6 +42,7 @@ private:
 
 	void DrawObject(GameObject* obj, Uint32 color);
 	void DrawSprite(SDL_Surface* sprite, Rectangle* rectangle);
+	void DrawSpriteCentered(SDL_Surface* sprite, double x, double y, double paralax = 1);
 
 	// Controle
 	SDL_Event* event;

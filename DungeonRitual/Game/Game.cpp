@@ -7,6 +7,6 @@ Game::Game()
 void Game::Launch()
 {
 	match = new Match(window);
-	MapLoader::Load(match, "test");
+	AssetLoader::LoadMap(match, "test");
 	match->Start();
 }

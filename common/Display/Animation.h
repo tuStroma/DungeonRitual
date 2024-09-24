@@ -84,6 +84,38 @@ public:
 			current->SetNext(first);
 		current = first;
 	}
+	Animation(rapidxml::xml_node<>* node, std::string asset_path)
+	{
+		node = node->first_node();
+
+		// Load sprites
+		while (node)
+		{
+			std::string sprite_name = node->first_attribute("path")->value();
+			int duration = atoi(node->first_attribute("duration")->value());
+
+			std::string sprite_path = asset_path + sprite_name;
+			Frame* frame = new Frame(sprite_path, duration);
+
+			// Insert new frame into animation
+			if (!first)
+			{
+				first = frame;
+				current = frame;
+			}
+			else
+			{
+				current->SetNext(frame);
+				current = frame;
+			}
+
+			node = node->next_sibling();
+		}
+
+		if (current)
+			current->SetNext(first);
+		current = first;
+	}
 
 	SDL_Surface* GetSprite()
 	{
@@ -91,6 +123,9 @@ public:
 
 		SDL_Surface* sprite = current->GetSprite();
 		int duration = current->GetDuration();
+
+		if (duration == 0)
+			return sprite;
 
 		while (now - time_counter > duration)
 		{

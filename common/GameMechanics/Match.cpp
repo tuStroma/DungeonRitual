@@ -46,13 +46,13 @@ void Match::DrawSprite(SDL_Surface* sprite, Rectangle* rectangle)
 		posToCameraY(rectangle->Down()));
 }
 
-void Match::DrawSpriteCentered(SDL_Surface* sprite, double x, double y, double paralax)
+void Match::DrawSpriteCentered(SDL_Surface* sprite, Point position, double paralax)
 {
 	double width = sprite->w / PIXELS_IN_METER;
 	double height = sprite->h / PIXELS_IN_METER;
 
-	x = camera.X() + (x - camera.X()) / paralax;
-	y = camera.Y() + (y - camera.Y()) / paralax;
+	double x = camera.X() + (position.X() - camera.X()) / paralax;
+	double y = camera.Y() + (position.Y() - camera.Y()) / paralax;
 
 	window->DrawSprite(sprite,
 		posToCameraX(x - width / 2),
@@ -138,11 +138,16 @@ void Match::Display()
 
 	for (Slope* slope : slopes)
 		DrawObject(slope, blue);
+
+	for (layer layer : background)
+		DrawSpriteCentered(	layer.animation->GetSprite(),
+							layer.position,
+							layer.depth);
 	
 	// Draw player
 	//DrawObject(player, red);
-	DrawSpriteCentered(test, 0, 0);
-	DrawSpriteCentered(test, 0, 0, 2);
+	DrawSpriteCentered(test, Point(0,0));
+	DrawSpriteCentered(test, Point(0,0), 2);
 	DrawSprite(player_animation->GetSprite(), player->getRectangle());
 
 	// Display
@@ -171,6 +176,11 @@ void Match::addActor(Actor* actor, bool is_player)
 {
 	if (is_player)
 		player = actor;
+}
+
+void Match::addLayer(Animation* animation, Point position, double depth)
+{
+	background.push_back(layer(animation, position, depth));
 }
 
 void Match::Start()

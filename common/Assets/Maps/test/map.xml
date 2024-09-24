@@ -49,3 +49,11 @@
 			height		="2"
 			is_player	="true"/>
 </GameObjects> 
+<Layers>
+	<LayerAnimation	position_x	="0"
+					position_y	="0"
+					depth		="1"
+					path		="Maps/test/1/">
+		<Frame path="1.bmp" duration="0"/>
+	</LayerAnimation>
+</Layers>

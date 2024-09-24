@@ -7,9 +7,10 @@
 #include "../Slope.h"
 
 
+#define ASSETS_PATH "../common/Assets/"
 #define MAPS_PATH "../common/Assets/Maps/"
 
-class MapLoader
+class AssetLoader
 {
 private:
     static bool BoolFromAttribute(rapidxml::xml_node<>* node, std::string attr)
@@ -103,8 +104,13 @@ private:
         }
     }
 
+    static Animation* LoadAnimation(rapidxml::xml_node<>* node, std::string asset_path)
+    {
+        return new Animation(node, asset_path);
+    }
+
 public:
-	static void Load(Match* match, std::string map_name)
+	static void LoadMap(Match* match, std::string map_name)
 	{
         std::string map_path = MAPS_PATH + map_name + "/map.xml";
         // Parse XML
@@ -118,6 +124,23 @@ public:
         std::list<Slope*> slopes;
         std::list<Actor*> actors;
         ProcessNode(node, walls, slopes, actors);
+
+        // Load layers
+        node = doc.first_node("Layers")->first_node();
+
+        while (node)
+        {
+            double position_x = atof(node->first_attribute("position_x")->value());
+            double position_y = atof(node->first_attribute("position_y")->value());
+            double depth = atof(node->first_attribute("depth")->value());
+            std::string path = node->first_attribute("path")->value();
+            Animation* animation = new Animation(node, ASSETS_PATH + path);
+
+            match->addLayer(animation, Point(position_x, position_y), depth);
+
+            node = node->next_sibling();
+        }
+
 
         for (GameObject* wall : walls)
             match->addObject(wall);

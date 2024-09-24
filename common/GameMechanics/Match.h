@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <list>
 
 #include "../Display/Window.h"
 #include "../Display/DisplayParameters.h"
@@ -13,6 +14,17 @@
 class Match
 {
 private:
+	struct layer {
+		Animation* animation;
+		Point position;
+		double depth;
+
+		layer(Animation* animation, Point position, double depth)
+			:animation(animation), position(position), depth(depth)
+		{}
+	};
+
+
 	bool quit = false;
 
 	// Game status
@@ -39,10 +51,11 @@ private:
 
 	// Display
 	Window* window;
+	std::list<layer> background;
 
 	void DrawObject(GameObject* obj, Uint32 color);
 	void DrawSprite(SDL_Surface* sprite, Rectangle* rectangle);
-	void DrawSpriteCentered(SDL_Surface* sprite, double x, double y, double paralax = 1);
+	void DrawSpriteCentered(SDL_Surface* sprite, Point position, double paralax = 1);
 
 	// Controle
 	SDL_Event* event;
@@ -56,6 +69,7 @@ public:
 
 	void addObject(GameObject* object);
 	void addActor(Actor* actor, bool is_player);
+	void addLayer(Animation* animation, Point position, double depth);
 
 	void Start();
 };

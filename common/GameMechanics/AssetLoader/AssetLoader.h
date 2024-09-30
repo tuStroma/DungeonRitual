@@ -104,11 +104,6 @@ private:
         }
     }
 
-    static Animation* LoadAnimation(rapidxml::xml_node<>* node, std::string asset_path)
-    {
-        return new Animation(node, asset_path);
-    }
-
 public:
 	static void LoadMap(Match* match, std::string map_name)
 	{
@@ -126,6 +121,7 @@ public:
         ProcessNode(node, walls, slopes, actors);
 
         // Load layers
+        SDL_Renderer* renderer = match->GetWindow()->GetRenderer();
         node = doc.first_node("Layers")->first_node();
 
         while (node)
@@ -134,7 +130,7 @@ public:
             double position_y = atof(node->first_attribute("position_y")->value());
             double depth = atof(node->first_attribute("depth")->value());
             std::string path = node->first_attribute("path")->value();
-            Animation* animation = new Animation(node, ASSETS_PATH + path);
+            Animation* animation = new Animation(node, ASSETS_PATH + path, renderer);
 
             match->addLayer(animation, Point(position_x, position_y), depth);
 

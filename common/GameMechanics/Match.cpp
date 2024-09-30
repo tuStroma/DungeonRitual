@@ -46,19 +46,28 @@ void Match::DrawSprite(SDL_Surface* sprite, Rectangle* rectangle)
 		posToCameraY(rectangle->Down()));
 }
 
-void Match::DrawSpriteCentered(SDL_Surface* sprite, Point position, double paralax)
+void Match::DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax)
 {
-	double width = sprite->w / PIXELS_IN_METER;
-	double height = sprite->h / PIXELS_IN_METER;
+	double match_width = width / PIXELS_IN_METER;
+	double match_height = height / PIXELS_IN_METER;
 
 	double x = camera.X() + (position.X() - camera.X()) / paralax;
 	double y = camera.Y() + (position.Y() - camera.Y()) / paralax;
 
 	window->DrawSprite(sprite,
-		posToCameraX(x - width / 2),
-		posToCameraX(x + width / 2),
-		posToCameraY(y + height / 2),
-		posToCameraY(y - height / 2));
+		posToCameraX(x),
+		posToCameraY(y),
+		width / PIXELS_IN_METER * DISTANCE_TO_PIXELS,
+		height / PIXELS_IN_METER * DISTANCE_TO_PIXELS);
+}
+
+void Match::DrawSprite(SDL_Texture* sprite, Rectangle* rectangle)
+{
+	window->DrawSprite(sprite,
+		posToCameraX(rectangle->Position().X()),
+		posToCameraY(rectangle->Position().Y()),
+		rectangle->Width() * DISTANCE_TO_PIXELS,
+		rectangle->Height() * DISTANCE_TO_PIXELS);
 }
 
 void Match::Input()
@@ -140,14 +149,18 @@ void Match::Display()
 		DrawObject(slope, blue);
 
 	for (layer layer : background)
-		DrawSpriteCentered(	layer.animation->GetSprite(),
+		//DrawSprite(layer.animation->GetSprite(), player->getRectangle());
+		DrawSpriteCentered(layer.animation->GetSprite(),
 							layer.position,
+							layer.animation->GetWidth(),
+							layer.animation->GetHeight(),
 							layer.depth);
 	
 	// Draw player
 	//DrawObject(player, red);
-	DrawSpriteCentered(test, Point(0,0));
-	DrawSpriteCentered(test, Point(0,0), 2);
+	//DrawSpriteCentered(test, Point(0,0));
+	//DrawSpriteCentered(test, Point(0,0), 2);
+	//DrawSprite(background.front().animation->GetSprite(), player->getRectangle());
 	DrawSprite(player_animation->GetSprite(), player->getRectangle());
 
 	// Display
@@ -157,7 +170,7 @@ void Match::Display()
 Match::Match(Window* window)
 	:window(window), event(new SDL_Event())
 {
-	player_animation = new Animation("Players/test", "Idle"); 
+	player_animation = new Animation("Players/test", "Idle", window->GetRenderer()); 
 	test = SDL_LoadBMP("../common/Assets/tests/player.bmp");
 	if (test == NULL) {
 		printf("test loading error: %s\n", SDL_GetError());
@@ -181,6 +194,11 @@ void Match::addActor(Actor* actor, bool is_player)
 void Match::addLayer(Animation* animation, Point position, double depth)
 {
 	background.push_back(layer(animation, position, depth));
+}
+
+Window* Match::GetWindow()
+{
+	return window;
 }
 
 void Match::Start()

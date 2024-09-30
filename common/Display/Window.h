@@ -182,6 +182,23 @@ public:
 			}
 		}
 	}
+	void DrawSprite(SDL_Texture* sprite, int x, int y, int width, int height)
+	{
+		int begin_x = x - width / 2;
+		int begin_y = y + height / 2;
+
+		SDL_Rect dest;
+		dest.x = CentreToWindowPosition_X(begin_x);
+		dest.y = CentreToWindowPosition_Y(begin_y);
+		dest.w = width;
+		dest.h = height;
+
+		//SDL_SetRenderTarget(renderer, sprite);
+		//SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, sprite, NULL, &dest);
+		//SDL_SetRenderTarget(renderer, NULL);
+		//SDL_RenderPresent(renderer);
+	}
 
 	void ClearFrame()
 	{
@@ -189,10 +206,15 @@ public:
 	}
 	void DisplayFrame()
 	{
-		SDL_UpdateTexture(scrtex, NULL, surface->pixels, surface->pitch);
-		//SDL_RenderClear(renderer);
-		SDL_RenderCopy(renderer, scrtex, NULL, NULL);
+		//SDL_UpdateTexture(scrtex, NULL, surface->pixels, surface->pitch);
+		//SDL_RenderCopy(renderer, scrtex, NULL, NULL);
 		SDL_RenderPresent(renderer);
+		SDL_RenderClear(renderer);
+	}
+
+	SDL_Renderer* GetRenderer()
+	{
+		return renderer;
 	}
 
 	// Generate color

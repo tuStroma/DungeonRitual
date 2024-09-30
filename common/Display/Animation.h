@@ -12,15 +12,23 @@ private:
 	{
 	private:
 		SDL_Surface* sprite = nullptr;
+		SDL_Texture* texture = nullptr;
 		// Duration in miliseconds
 		int duration = 0;
 
 		Frame* next = nullptr;
 
+		int width = 0;
+		int height = 0;
+
 	public:
 		Frame() {}
-		Frame(std::string sprite_path, int duration)
-			:sprite(SDL_LoadBMP(sprite_path.c_str())), duration(duration)
+		Frame(std::string sprite_path, int duration, SDL_Renderer* renderer)
+			:sprite(SDL_LoadBMP(sprite_path.c_str())),
+			duration(duration),
+			texture(SDL_CreateTextureFromSurface(renderer, sprite)),
+			width(sprite->w),
+			height(sprite->h)
 		{}
 
 		void SetNext(Frame* next)
@@ -28,9 +36,17 @@ private:
 			this->next = next;
 		}
 
-		SDL_Surface* GetSprite()
+		SDL_Texture* GetSprite()
 		{
-			return sprite;
+			return texture;
+		}
+		int GetWidth()
+		{
+			return width;
+		}
+		int GetHeight()
+		{
+			return height;
 		}
 		int GetDuration()
 		{
@@ -47,7 +63,7 @@ private:
 	int time_counter = 0;
 
 public:
-	Animation(std::string character, std::string animation)
+	Animation(std::string character, std::string animation, SDL_Renderer* renderer)
 	{
 		// Parse XML
 		std::string animation_path = ACTORS_PATH + character + "/animations.xml";
@@ -63,7 +79,7 @@ public:
 			int duration = atoi(node->first_attribute("duration")->value());
 
 			std::string sprite_path = ACTORS_PATH + character + "/" + animation + "/" + sprite_name;
-			Frame* frame = new Frame(sprite_path, duration);
+			Frame* frame = new Frame(sprite_path, duration, renderer);
 
 			// Insert new frame into animation
 			if (!first)
@@ -84,7 +100,7 @@ public:
 			current->SetNext(first);
 		current = first;
 	}
-	Animation(rapidxml::xml_node<>* node, std::string asset_path)
+	Animation(rapidxml::xml_node<>* node, std::string asset_path, SDL_Renderer* renderer)
 	{
 		node = node->first_node();
 
@@ -95,7 +111,7 @@ public:
 			int duration = atoi(node->first_attribute("duration")->value());
 
 			std::string sprite_path = asset_path + sprite_name;
-			Frame* frame = new Frame(sprite_path, duration);
+			Frame* frame = new Frame(sprite_path, duration, renderer);
 
 			// Insert new frame into animation
 			if (!first)
@@ -117,11 +133,11 @@ public:
 		current = first;
 	}
 
-	SDL_Surface* GetSprite()
+	SDL_Texture* GetSprite()
 	{
 		int now = SDL_GetTicks();
 
-		SDL_Surface* sprite = current->GetSprite();
+		SDL_Texture* sprite = current->GetSprite();
 		int duration = current->GetDuration();
 
 		if (duration == 0)
@@ -137,5 +153,15 @@ public:
 		}
 
 		return sprite;
+	}
+
+	int GetWidth()
+	{
+		return current->GetWidth();
+	}
+
+	int GetHeight()
+	{
+		return current->GetHeight();
 	}
 };

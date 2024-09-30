@@ -55,7 +55,8 @@ private:
 
 	void DrawObject(GameObject* obj, Uint32 color);
 	void DrawSprite(SDL_Surface* sprite, Rectangle* rectangle);
-	void DrawSpriteCentered(SDL_Surface* sprite, Point position, double paralax = 1);
+	void DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax = 1);
+	void DrawSprite(SDL_Texture* sprite, Rectangle* rectangle);
 
 	// Controle
 	SDL_Event* event;
@@ -70,6 +71,8 @@ public:
 	void addObject(GameObject* object);
 	void addActor(Actor* actor, bool is_player);
 	void addLayer(Animation* animation, Point position, double depth);
+
+	Window* GetWindow();
 
 	void Start();
 };

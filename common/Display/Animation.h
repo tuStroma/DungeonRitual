@@ -72,43 +72,6 @@ private:
 	int time_counter = 0;
 
 public:
-	Animation(std::string character, std::string animation, SDL_Renderer* renderer)
-	{
-		// Parse XML
-		std::string animation_path = ACTORS_PATH + character + "/animations.xml";
-		rapidxml::file<> xmlFile(animation_path.c_str());
-		rapidxml::xml_document<> doc;
-		doc.parse<0>(xmlFile.data());
-		rapidxml::xml_node<>* node = doc.first_node(animation.c_str())->first_node();
-
-		// Load sprites
-		while (node)
-		{
-			std::string sprite_name = node->first_attribute("path")->value();
-			int duration = atoi(node->first_attribute("duration")->value());
-
-			std::string sprite_path = ACTORS_PATH + character + "/" + animation + "/" + sprite_name;
-			Frame* frame = new Frame(sprite_path, duration, renderer);
-
-			// Insert new frame into animation
-			if (!first)
-			{
-				first = frame;
-				current = frame;
-			}
-			else
-			{
-				current->SetNext(frame);
-				current = frame;
-			}
-
-			node = node->next_sibling();
-		}
-
-		if (current)
-			current->SetNext(first);
-		current = first;
-	}
 	Animation(rapidxml::xml_node<>* node, std::string asset_path, SDL_Renderer* renderer)
 	{
 		node = node->first_node();

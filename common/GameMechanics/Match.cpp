@@ -171,7 +171,7 @@ void Match::Display()
 {
 	// Draw
 	// Draw environment
-	for (layer layer : background)
+	for (Layer layer : background)
 		DrawSpriteCentered(layer.animation->GetSprite(),
 							layer.position,
 							layer.animation->GetWidth(),
@@ -179,20 +179,46 @@ void Match::Display()
 							layer.depth);
 	
 	// Draw player
-	DrawSprite(player_animation->GetSprite(), player->getRectangle());
+	DrawSprite(player->getAnimation()->GetSprite(), player->getRectangle());
 
 	// Display
 	window->DisplayFrame();
 }
 
-Match::Match(Window* window)
+Match::Match(Window* window, std::string map)
 	:window(window), event(new SDL_Event())
 {
-	player_animation = new Animation("Players/test", "Idle", window->GetRenderer()); 
-	test = SDL_LoadBMP("../common/Assets/tests/player.bmp");
-	if (test == NULL) {
-		printf("test loading error: %s\n", SDL_GetError());
-	};
+	// Load map
+	std::string map_path = MAPS_PATH + map + "/map.xml";
+	AssetLoader loader(map_path);
+	rapidxml::xml_document<>* doc = loader.GetDocument();
+	rapidxml::xml_node<>* node = doc->first_node("GameObjects")->first_node();
+
+	// Load objects
+	while (node)
+	{
+		std::string name = node->name();
+		if (name == "Wall")
+			addObject(AssetLoader::LoadWall(node));
+		else if (name == "Slope")
+			addObject(AssetLoader::LoadSlope(node));
+		else if (name == "Actor")
+			addActor(new Actor(node, "Players/test", window->GetRenderer()), true);
+
+		node = node->next_sibling();
+	}
+
+	// Load background
+	SDL_Renderer* renderer = window->GetRenderer();
+	node = doc->first_node("Layers")->first_node();
+
+	while (node)
+	{
+		Layer layer(node, renderer);
+		background.push_back(layer);
+
+		node = node->next_sibling();
+	}
 }
 
 void Match::addObject(GameObject* object)
@@ -211,7 +237,7 @@ void Match::addActor(Actor* actor, bool is_player)
 
 void Match::addLayer(Animation* animation, Point position, double depth)
 {
-	background.push_back(layer(animation, position, depth));
+	background.push_back(Layer(animation, position, depth));
 }
 
 Window* Match::GetWindow()

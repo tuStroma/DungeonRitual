@@ -7,6 +7,7 @@
 #include "../Display/DisplayParameters.h"
 #include "../Display/Animation.h"
 #include "../Display/SurfacePainter.h"
+#include "AssetLoader/AssetLoader.h"
 #include "GameObject.h"
 #include "Actor.h"
 
@@ -15,14 +16,24 @@
 class Match
 {
 private:
-	struct layer {
+	struct Layer {
 		Animation* animation;
 		Point position;
 		double depth;
 
-		layer(Animation* animation, Point position, double depth)
+		Layer(Animation* animation, Point position, double depth)
 			:animation(animation), position(position), depth(depth)
 		{}
+		Layer(rapidxml::xml_node<>* node, SDL_Renderer* renderer)
+		{
+			double position_x = atof(node->first_attribute("position_x")->value());
+			double position_y = atof(node->first_attribute("position_y")->value());
+			depth = atof(node->first_attribute("depth")->value());
+			std::string path = node->first_attribute("path")->value();
+			animation = new Animation(node, ASSETS_PATH + path, renderer);
+
+			position = Point(position_x, position_y);
+		}
 	};
 
 
@@ -30,8 +41,6 @@ private:
 
 	// Game status
 	Actor* player = nullptr;
-	Animation* player_animation;
-	SDL_Surface* test;
 
 	std::vector<GameObject*> walls;
 	std::vector<Slope*> slopes;
@@ -52,7 +61,7 @@ private:
 
 	// Display
 	Window* window;
-	std::list<layer> background;
+	std::list<Layer> background;
 
 	void DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color);
 	void DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax = 1);
@@ -67,7 +76,7 @@ private:
 	void Display();
 
 public:
-	Match(Window* window);
+	Match(Window* window, std::string map);
 
 	void addObject(GameObject* object);
 	void addActor(Actor* actor, bool is_player);

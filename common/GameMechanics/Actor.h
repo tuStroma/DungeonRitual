@@ -6,6 +6,9 @@
 #include "GameObject.h"
 #include "Slope.h"
 
+#include "AssetLoader/AssetLoader.h"
+#include "../Display/Animation.h"
+
 class Actor : public GameObject
 {
 private:
@@ -20,11 +23,21 @@ private:
 	bool moving_down = false;
 	bool jumping = false;
 	GameObject* standing_on = nullptr;
+
+	// Animations
+	Animation* idle = nullptr;
+
+	Animation* LoadAnimation(rapidxml::xml_document<>* doc,
+		std::string character,
+		std::string animation,
+		SDL_Renderer* renderer);
+
 public:
 	Actor();
 	Actor(Rectangle* shape)
 		:GameObject(shape)
 	{}
+	Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* renderer);
 
 	void MoveLeft(bool move)  { moving_left = move; }
 	void MoveRight(bool move) { moving_right = move; }
@@ -40,5 +53,6 @@ public:
 	void ResolveCollision(Point connection, GameObject* obj);
 
 	Rectangle* getRectangle();
+	Animation* getAnimation();
 };
 

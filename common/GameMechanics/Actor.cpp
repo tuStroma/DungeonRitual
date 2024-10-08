@@ -4,6 +4,44 @@ Actor::Actor()
 {
 }
 
+Actor::Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* renderer)
+{
+	// Load Actor object
+	float position_x = atof(node->first_attribute("position_x")->value());
+	float position_y = atof(node->first_attribute("position_y")->value());
+	float width = atof(node->first_attribute("width")->value());
+	float height = atof(node->first_attribute("height")->value());
+
+	bool is_player = AssetLoader::BoolFromAttribute(node, "is_player");
+
+	Point centre(position_x, position_y);
+
+	std::cout << "Actor"
+		<< "\n\tPosition_x:\t" << position_x
+		<< "\n\tPosition_y:\t" << position_y
+		<< "\n\tWidth:\t" << width
+		<< "\n\tHeight:\t" << height
+		<< "\n";
+
+	this->shape = new Rectangle(centre, width, height);
+
+	// Load animations
+	std::string animation_path = ACTORS_PATH + character + "/animations.xml";
+	AssetLoader loader(animation_path);
+	rapidxml::xml_document<>* doc = loader.GetDocument();
+
+	idle = LoadAnimation(doc, character, "Idle", renderer);
+}
+
+Animation* Actor::LoadAnimation(rapidxml::xml_document<>* doc,
+								std::string character,
+								std::string animation,
+								SDL_Renderer* renderer)
+{
+	rapidxml::xml_node<>* character_node = doc->first_node(animation.c_str());
+	return new Animation(character_node, ACTORS_PATH + character + "/" + animation + "/", renderer);
+}
+
 void Actor::Jump(bool jump)
 {
 	if (standing_on && !jumping)
@@ -142,4 +180,9 @@ void Actor::ResolveCollision(Point connection, GameObject* obj)
 Rectangle* Actor::getRectangle()
 {
 	return dynamic_cast<Rectangle*>(shape);
+}
+
+Animation* Actor::getAnimation()
+{
+	return idle;
 }

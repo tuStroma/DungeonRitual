@@ -6,6 +6,7 @@
 #include "../Display/Window.h"
 #include "../Display/DisplayParameters.h"
 #include "../Display/Animation.h"
+#include "../Display/SurfacePainter.h"
 #include "GameObject.h"
 #include "Actor.h"
 
@@ -53,10 +54,10 @@ private:
 	Window* window;
 	std::list<layer> background;
 
-	void DrawObject(GameObject* obj, Uint32 color);
-	void DrawSprite(SDL_Surface* sprite, Rectangle* rectangle);
+	void DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color);
 	void DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax = 1);
 	void DrawSprite(SDL_Texture* sprite, Rectangle* rectangle);
+	void CreateBackgroundTexture();
 
 	// Controle
 	SDL_Event* event;

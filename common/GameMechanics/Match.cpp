@@ -10,40 +10,33 @@ int Match::posToCameraY(double y)
 	return (int) ((y - camera.Y()) * DISTANCE_TO_PIXELS);
 }
 
-void Match::DrawObject(GameObject* obj, Uint32 color)
+void Match::DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color)
 {
 	Shape* shape = obj->GetShape();
 
 	if (Rectangle* r = dynamic_cast<Rectangle*>(shape))
 	{
-		window->DrawRectangleCentered(	posToCameraX(obj->Position().X()),
-										posToCameraY(obj->Position().Y()),
-										(int)(r->Width() * DISTANCE_TO_PIXELS),
-										(int)(r->Height() * DISTANCE_TO_PIXELS),
-										color);
+		SurfacePainter::DrawRectangleCentered(	surface,
+												posToCameraX(obj->Position().X()) / PIXEL_SCALEUP,
+												posToCameraY(obj->Position().Y()) / PIXEL_SCALEUP,
+												(int)(r->Width() * PIXELS_IN_METER),
+												(int)(r->Height() * PIXELS_IN_METER),
+												color);
 	}
 	else if (Segment* s = dynamic_cast<Segment*>(shape))
 	{
 		for (int i = 0; i < 5; i++)
-			window->DrawLine(	posToCameraX(s->Position().X()),
-								posToCameraY(s->Position().Y()) - i,
-								posToCameraX(s->EndPoint().X()),
-								posToCameraY(s->EndPoint().Y()) - i,
-								color);
+			SurfacePainter::DrawLine(	surface,
+										posToCameraX(s->Position().X()) / PIXEL_SCALEUP,
+										posToCameraY(s->Position().Y()) / PIXEL_SCALEUP - i,
+										posToCameraX(s->EndPoint().X()) / PIXEL_SCALEUP,
+										posToCameraY(s->EndPoint().Y()) / PIXEL_SCALEUP - i,
+										color);
 	}
 	else
 	{
 		std::cout << "Unknown shape\n";
 	}
-}
-
-void Match::DrawSprite(SDL_Surface* sprite, Rectangle* rectangle)
-{
-	window->DrawSprite(sprite,
-		posToCameraX(rectangle->Left()),
-		posToCameraX(rectangle->Right()),
-		posToCameraY(rectangle->Up()),
-		posToCameraY(rectangle->Down()));
 }
 
 void Match::DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax)
@@ -68,6 +61,49 @@ void Match::DrawSprite(SDL_Texture* sprite, Rectangle* rectangle)
 		posToCameraY(rectangle->Position().Y()),
 		rectangle->Width() * DISTANCE_TO_PIXELS,
 		rectangle->Height() * DISTANCE_TO_PIXELS);
+}
+
+void Match::CreateBackgroundTexture()
+{
+	// Surface size
+	int left = 0, right = 0, up = 0, down = 0;
+	for (GameObject* go : walls)
+	{
+		Rectangle* r = static_cast<Rectangle*>(go->GetShape());
+		left = fmin(left, r->Left() * PIXELS_IN_METER);
+		right = fmax(right, r->Right() * PIXELS_IN_METER);
+		up = fmax(up, r->Up() * PIXELS_IN_METER);
+		down = fmin(down, r->Down() * PIXELS_IN_METER);
+	}
+
+	for (Slope* sl : slopes)
+	{
+		Segment* s = static_cast<Segment*>(sl->GetShape());
+		left = fmin(left, s->LeftPoint().X() * PIXELS_IN_METER);
+		right = fmax(right, s->RightPoint().X() * PIXELS_IN_METER);
+		up = fmax(up, s->UpperPoint().Y() * PIXELS_IN_METER);
+		down = fmin(down, s->LowerPoint().Y() * PIXELS_IN_METER);
+	}
+
+	int width = (fmax(-left, right)) * 2;
+	int height = (fmax(up, -down)) * 2;
+
+	// Create surface
+	SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+
+	// Paint map
+	int black = SDL_MapRGB(surface->format, 0, 0, 0);
+	int blue = SDL_MapRGB(surface->format, 0, 0, 0xFF);
+	SDL_FillRect(surface, NULL, black);
+
+	for (GameObject* wall : walls)
+		DrawObject(surface, wall, blue);
+
+	for (Slope* slope : slopes)
+		DrawObject(surface, slope, blue);
+
+	Animation* animation = new Animation(surface, window->GetRenderer());
+	addLayer(animation, Point(0, 0), 1);
 }
 
 void Match::Input()
@@ -133,23 +169,9 @@ void Match::Update()
 
 void Match::Display()
 {
-	int red = window->getColor(0xFF, 0x00, 0x00);
-	int blue = window->getColor(0x00, 0x00, 0xFF);
-	int black = window->getColor(0x00, 0x00, 0x00);
-
-	// Clear frame
-	window->ClearFrame();
-
 	// Draw
 	// Draw environment
-	for (GameObject* wall : walls)
-		DrawObject(wall, blue);
-
-	for (Slope* slope : slopes)
-		DrawObject(slope, blue);
-
 	for (layer layer : background)
-		//DrawSprite(layer.animation->GetSprite(), player->getRectangle());
 		DrawSpriteCentered(layer.animation->GetSprite(),
 							layer.position,
 							layer.animation->GetWidth(),
@@ -157,10 +179,6 @@ void Match::Display()
 							layer.depth);
 	
 	// Draw player
-	//DrawObject(player, red);
-	//DrawSpriteCentered(test, Point(0,0));
-	//DrawSpriteCentered(test, Point(0,0), 2);
-	//DrawSprite(background.front().animation->GetSprite(), player->getRectangle());
 	DrawSprite(player_animation->GetSprite(), player->getRectangle());
 
 	// Display
@@ -203,6 +221,9 @@ Window* Match::GetWindow()
 
 void Match::Start()
 {
+	if (background.size() == 0)
+		CreateBackgroundTexture();
+
 	t1 = SDL_GetTicks();
 
 	while (!quit)

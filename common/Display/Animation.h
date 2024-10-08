@@ -11,7 +11,6 @@ private:
 	class Frame
 	{
 	private:
-		SDL_Surface* sprite = nullptr;
 		SDL_Texture* texture = nullptr;
 		// Duration in miliseconds
 		int duration = 0;
@@ -24,12 +23,22 @@ private:
 	public:
 		Frame() {}
 		Frame(std::string sprite_path, int duration, SDL_Renderer* renderer)
-			:sprite(SDL_LoadBMP(sprite_path.c_str())),
-			duration(duration),
-			texture(SDL_CreateTextureFromSurface(renderer, sprite)),
-			width(sprite->w),
-			height(sprite->h)
-		{}
+			:duration(duration)
+		{
+			SDL_Surface* surface = SDL_LoadBMP(sprite_path.c_str());
+			texture = SDL_CreateTextureFromSurface(renderer, surface);
+			width = surface->w;
+			height = surface->h;
+			SDL_FreeSurface(surface);
+		}
+		Frame(SDL_Surface* surface, int duration, SDL_Renderer* renderer)
+			:duration(duration)
+		{
+			texture = SDL_CreateTextureFromSurface(renderer, surface);
+			width = surface->w;
+			height = surface->h;
+			SDL_FreeSurface(surface);
+		}
 
 		void SetNext(Frame* next)
 		{
@@ -131,6 +140,12 @@ public:
 		if (current)
 			current->SetNext(first);
 		current = first;
+	}
+	Animation(SDL_Surface* surface, SDL_Renderer* renderer)
+	{
+		first = new Frame(surface, 0, renderer);
+		current = first;
+		current->SetNext(current);
 	}
 
 	SDL_Texture* GetSprite()

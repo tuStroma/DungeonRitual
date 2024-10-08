@@ -8,3 +8,6 @@
 
 // Display pixels in 1 meter, constant value
 #define PIXELS_IN_METER 20
+
+// Ratio of pixel scaling from assets to screen
+#define PIXEL_SCALEUP (DISTANCE_TO_PIXELS/PIXELS_IN_METER)

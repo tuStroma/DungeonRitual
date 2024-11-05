@@ -9,7 +9,8 @@
 #include "../Display/SurfacePainter.h"
 #include "AssetLoader/AssetLoader.h"
 #include "GameObject.h"
-#include "Actor.h"
+#include "Actor/Actor.h"
+#include "Actor/OutsideController.h"
 
 #include "ObjectCollisions.h"
 
@@ -40,8 +41,10 @@ private:
 	bool quit = false;
 
 	// Game status
-	Actor* player = nullptr;
+	int player_index = 0;
+	OutsideController* player_controller = nullptr;
 
+	std::vector<Actor*> actors;
 	std::vector<GameObject*> walls;
 	std::vector<Slope*> slopes;
 
@@ -76,10 +79,10 @@ private:
 	void Display();
 
 public:
-	Match(Window* window, std::string map);
+	Match(Window* window, std::string map, int player_index);
 
 	void addObject(GameObject* object);
-	void addActor(Actor* actor, bool is_player);
+	void addActor(Actor* actor);
 	void addLayer(Animation* animation, Point position, double depth);
 
 	Window* GetWindow();

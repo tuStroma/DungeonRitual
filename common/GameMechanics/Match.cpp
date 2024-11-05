@@ -112,16 +112,16 @@ void Match::Input()
 		switch (event->type) {
 		case SDL_KEYDOWN:
 			if (event->key.keysym.sym == SDLK_ESCAPE) quit = 1;
-			else if (event->key.keysym.sym == SDLK_a) player->MoveLeft(true);
-			else if (event->key.keysym.sym == SDLK_d) player->MoveRight(true);
-			else if (event->key.keysym.sym == SDLK_s) player->MoveDown(true);
-			else if (event->key.keysym.sym == SDLK_SPACE) player->Jump(true);
+			else if (event->key.keysym.sym == SDLK_a) player_controller->AddAction(Left);
+			else if (event->key.keysym.sym == SDLK_d) player_controller->AddAction(Right);
+			else if (event->key.keysym.sym == SDLK_s) player_controller->AddAction(Down);
+			else if (event->key.keysym.sym == SDLK_SPACE) player_controller->AddAction(Jump);
 			break;
 		case SDL_KEYUP:
-			if (event->key.keysym.sym == SDLK_a) player->MoveLeft(false);
-			else if (event->key.keysym.sym == SDLK_d) player->MoveRight(false);
-			else if (event->key.keysym.sym == SDLK_s) player->MoveDown(false);
-			else if (event->key.keysym.sym == SDLK_SPACE) player->Jump(false);
+			if (event->key.keysym.sym == SDLK_a) player_controller->AddAction(StopLeft);
+			else if (event->key.keysym.sym == SDLK_d) player_controller->AddAction(StopRight);
+			else if (event->key.keysym.sym == SDLK_s) player_controller->AddAction(StopDown);
+			else if (event->key.keysym.sym == SDLK_SPACE) player_controller->AddAction(StopJump);
 			break;
 		case SDL_QUIT:
 			quit = 1;
@@ -147,24 +147,29 @@ void Match::Update()
 	//// Update Game state
 
 	// Move all objects
-	player->Move(delta);
-
-	// Check colisions
-	for (GameObject* wall : walls)
+	for (Actor* actor : actors)
 	{
-		Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)player->GetShape(), *(Rectangle*)wall->GetShape());
-		player->ResolveCollision(connection, wall);
-	}
+		actor->TakeAction();
 
-	// Slopes
-	for (Slope* slope : slopes)
-	{
-		Point connection = object_collisions::contact::ActorToSlope(*player, *slope);
-		player->ResolveCollision(connection, slope);
+		actor->Move(delta);
+
+		// Check colisions
+		for (GameObject* wall : walls)
+		{
+			Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)actor->GetShape(), *(Rectangle*)wall->GetShape());
+			actor->ResolveCollision(connection, wall);
+		}
+
+		// Slopes
+		for (Slope* slope : slopes)
+		{
+			Point connection = object_collisions::contact::ActorToSlope(*actor, *slope);
+			actor->ResolveCollision(connection, slope);
+		}
 	}
 
 	// Camera position
-	camera = player->Position();
+	camera = actors[player_index]->Position();
 }
 
 void Match::Display()
@@ -178,15 +183,16 @@ void Match::Display()
 							layer.animation->GetHeight(),
 							layer.depth);
 	
-	// Draw player
-	DrawSprite(player->getAnimation()->GetSprite(), player->getRectangle());
+	// Draw actors
+	for (Actor* actor : actors)
+		DrawSprite(actor->getAnimation()->GetSprite(), actor->getRectangle());
 
 	// Display
 	window->DisplayFrame();
 }
 
-Match::Match(Window* window, std::string map)
-	:window(window), event(new SDL_Event())
+Match::Match(Window* window, std::string map, int player_index)
+	:window(window), event(new SDL_Event()), player_index(player_index)
 {
 	// Load map
 	std::string map_path = MAPS_PATH + map + "/map.xml";
@@ -203,10 +209,14 @@ Match::Match(Window* window, std::string map)
 		else if (name == "Slope")
 			addObject(AssetLoader::LoadSlope(node));
 		else if (name == "Actor")
-			addActor(new Actor(node, "Players/test", window->GetRenderer()), true);
+			addActor(new Actor(node, "Players/test", window->GetRenderer()));
 
 		node = node->next_sibling();
 	}
+
+	// Get the player controller
+	ActorController* pl = actors[player_index]->getController();
+	player_controller = dynamic_cast<OutsideController*>(pl);
 
 	// Load background
 	SDL_Renderer* renderer = window->GetRenderer();
@@ -229,10 +239,9 @@ void Match::addObject(GameObject* object)
 		walls.push_back(object);
 }
 
-void Match::addActor(Actor* actor, bool is_player)
+void Match::addActor(Actor* actor)
 {
-	if (is_player)
-		player = actor;
+	actors.push_back(actor);
 }
 
 void Match::addLayer(Animation* animation, Point position, double depth)

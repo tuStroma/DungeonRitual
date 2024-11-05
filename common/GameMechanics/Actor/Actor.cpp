@@ -1,4 +1,5 @@
 #include "Actor.h"
+#include "OutsideController.h"
 
 Actor::Actor()
 {
@@ -24,6 +25,9 @@ Actor::Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* re
 		<< "\n";
 
 	this->shape = new Rectangle(centre, width, height);
+
+	// Controller
+	controller = new OutsideController();
 
 	// Load animations
 	std::string animation_path = ACTORS_PATH + character + "/animations.xml";
@@ -51,6 +55,11 @@ void Actor::Jump(bool jump)
 	}
 	
 	jumping = jump;
+}
+
+void Actor::TakeAction()
+{
+	controller->TakeAction(this);
 }
 
 void Actor::Move(double t)

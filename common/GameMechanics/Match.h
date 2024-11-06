@@ -2,11 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <chrono>
 
-#include "../Display/Window.h"
-#include "../Display/DisplayParameters.h"
-#include "../Display/Animation.h"
-#include "../Display/SurfacePainter.h"
 #include "AssetLoader/AssetLoader.h"
 #include "GameObject.h"
 #include "Actor/Actor.h"
@@ -30,12 +27,12 @@ protected:
 	std::vector<Slope*> slopes;
 
 	// Time
-	int t1 = 0, t2 = 0;
-	int time_count = 0;
+	std::chrono::system_clock::time_point t1, t2;
+	std::chrono::system_clock::time_point time_count;
 	int frame_count = 0;
 
-	// Controle
-	SDL_Event* event;
+	long long TimeDelta(std::chrono::system_clock::time_point end,
+						std::chrono::system_clock::time_point begin);
 
 	void Input();
 	void Update();

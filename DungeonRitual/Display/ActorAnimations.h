@@ -1,6 +1,6 @@
 #pragma once
 #include "Animation.h"
-#include "../GameMechanics/Actor/Actor.h"
+#include "../../common/GameMechanics/Actor/Actor.h"
 
 class ActorAnimations
 {

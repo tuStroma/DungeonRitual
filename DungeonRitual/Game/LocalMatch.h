@@ -5,7 +5,12 @@
 #include <map>
 
 #include "../../common/GameMechanics/Match.h"
-#include "../../common/Display/ActorAnimations.h"
+
+#include "../Display/ActorAnimations.h"
+#include "../Display/Window.h"
+#include "../Display/DisplayParameters.h"
+#include "../Display/Animation.h"
+#include "../Display/SurfacePainter.h"
 
 class LocalMatch : public Match
 {
@@ -46,6 +51,9 @@ private:
 	void DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax = 1);
 	void DrawSprite(SDL_Texture* sprite, Rectangle* rectangle);
 	void CreateBackgroundTexture();
+
+	// Controle
+	SDL_Event* event;
 
 	void Input();
 	void Update();

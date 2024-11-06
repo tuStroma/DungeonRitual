@@ -1,37 +1,23 @@
 #include "Match.h"
 
+long long Match::TimeDelta(std::chrono::system_clock::time_point end, std::chrono::system_clock::time_point begin)
+{
+	return std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+}
+
 void Match::Input()
 {
-	while (SDL_PollEvent(event)) {
-		switch (event->type) {
-		case SDL_KEYDOWN:
-			if (event->key.keysym.sym == SDLK_ESCAPE) quit = 1;
-			else if (event->key.keysym.sym == SDLK_a) player_controller->AddAction(Left);
-			else if (event->key.keysym.sym == SDLK_d) player_controller->AddAction(Right);
-			else if (event->key.keysym.sym == SDLK_s) player_controller->AddAction(Down);
-			else if (event->key.keysym.sym == SDLK_SPACE) player_controller->AddAction(Jump);
-			break;
-		case SDL_KEYUP:
-			if (event->key.keysym.sym == SDLK_a) player_controller->AddAction(StopLeft);
-			else if (event->key.keysym.sym == SDLK_d) player_controller->AddAction(StopRight);
-			else if (event->key.keysym.sym == SDLK_s) player_controller->AddAction(StopDown);
-			else if (event->key.keysym.sym == SDLK_SPACE) player_controller->AddAction(StopJump);
-			break;
-		case SDL_QUIT:
-			quit = 1;
-			break;
-		};
-	};
+	
 }
 
 void Match::Update()
 {
 	// Time delta
-	t2 = SDL_GetTicks();
-	double delta = (t2 - t1) * 0.001;
+	t2 = std::chrono::system_clock::now();
+	double delta = TimeDelta(t2, t1) * 0.000001;
 	t1 = t2;
 	frame_count++;
-	if (t2 - time_count >= 1000)
+	if (TimeDelta(t2, time_count) >= 1000000)
 	{
 		std::cout << frame_count << "\n";
 		frame_count = 0;
@@ -64,7 +50,7 @@ void Match::Update()
 }
 
 Match::Match(std::string map, int player_index)
-	:event(new SDL_Event()), player_index(player_index)
+	:player_index(player_index)
 {
 	// Load map
 	std::string map_path = MAPS_PATH + map + "/map.xml";
@@ -107,7 +93,7 @@ void Match::addActor(Actor* actor)
 
 void Match::Start()
 {
-	t1 = SDL_GetTicks();
+	t1 = std::chrono::system_clock::now();
 
 	while (!quit)
 	{

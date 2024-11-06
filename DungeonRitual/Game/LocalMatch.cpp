@@ -133,11 +133,11 @@ void LocalMatch::Input()
 void LocalMatch::Update()
 {
 	// Time delta
-	t2 = SDL_GetTicks();
-	double delta = (t2 - t1) * 0.001;
+	t2 = std::chrono::system_clock::now();
+	double delta = TimeDelta(t2, t1) * 0.000001;
 	t1 = t2;
 	frame_count++;
-	if (t2 - time_count >= 1000)
+	if (TimeDelta(t2, time_count) >= 1000000)
 	{
 		std::cout << frame_count << "\n";
 		frame_count = 0;
@@ -192,7 +192,7 @@ void LocalMatch::Display()
 }
 
 LocalMatch::LocalMatch(Window* window, std::string map, int player_index)
-	:Match(map, player_index), window(window)
+	:Match(map, player_index), event(new SDL_Event()), window(window)
 {
 	// Load map
 	std::string map_path = MAPS_PATH + map + "/map.xml";
@@ -236,7 +236,7 @@ void LocalMatch::Start()
 	if (background.size() == 0)
 		CreateBackgroundTexture();
 
-	t1 = SDL_GetTicks();
+	t1 = std::chrono::system_clock::now();
 
 	while (!quit)
 	{

@@ -7,7 +7,6 @@
 #include "../Slope.h"
 
 #include "../AssetLoader/AssetLoader.h"
-#include "../../Display/Animation.h"
 
 class ActorController;
 class OutsideController;

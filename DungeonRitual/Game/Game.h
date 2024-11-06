@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL.h>
 
+#include "LocalMatch.h"
+
 #include "../../common/Display/Window.h"
 #include "../../common/GameMechanics/Match.h"
 #include "../../common/GameMechanics/AssetLoader/AssetLoader.h"

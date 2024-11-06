@@ -29,20 +29,12 @@ private:
 
 	ActorController* controller;
 
-	// Animations
-	Animation* idle = nullptr;
-
-	Animation* LoadAnimation(rapidxml::xml_document<>* doc,
-		std::string character,
-		std::string animation,
-		SDL_Renderer* renderer);
-
 public:
 	Actor();
 	Actor(Rectangle* shape)
 		:GameObject(shape)
 	{}
-	Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* renderer);
+	Actor(rapidxml::xml_node<>* node);
 
 	// Actor controlls
 	void MoveLeft(bool move)  { moving_left = move; }
@@ -62,6 +54,5 @@ public:
 	void ResolveCollision(Point connection, GameObject* obj);
 
 	Rectangle* getRectangle();
-	Animation* getAnimation();
 };
 

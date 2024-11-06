@@ -6,6 +6,6 @@ Game::Game()
 
 void Game::Launch()
 {
-	match = new Match(window, "test", 0);
+	match = new LocalMatch(window, "test", 0);
 	match->Start();
 }

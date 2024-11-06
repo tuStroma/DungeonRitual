@@ -5,7 +5,7 @@ Actor::Actor()
 {
 }
 
-Actor::Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* renderer)
+Actor::Actor(rapidxml::xml_node<>* node)
 {
 	// Load Actor object
 	float position_x = atof(node->first_attribute("position_x")->value());
@@ -28,22 +28,6 @@ Actor::Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* re
 
 	// Controller
 	controller = new OutsideController();
-
-	// Load animations
-	std::string animation_path = ACTORS_PATH + character + "/animations.xml";
-	AssetLoader loader(animation_path);
-	rapidxml::xml_document<>* doc = loader.GetDocument();
-
-	idle = LoadAnimation(doc, character, "Idle", renderer);
-}
-
-Animation* Actor::LoadAnimation(rapidxml::xml_document<>* doc,
-								std::string character,
-								std::string animation,
-								SDL_Renderer* renderer)
-{
-	rapidxml::xml_node<>* character_node = doc->first_node(animation.c_str());
-	return new Animation(character_node, ACTORS_PATH + character + "/" + animation + "/", renderer);
 }
 
 void Actor::Jump(bool jump)
@@ -189,9 +173,4 @@ void Actor::ResolveCollision(Point connection, GameObject* obj)
 Rectangle* Actor::getRectangle()
 {
 	return dynamic_cast<Rectangle*>(shape);
-}
-
-Animation* Actor::getAnimation()
-{
-	return idle;
 }

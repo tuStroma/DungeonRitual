@@ -17,10 +17,10 @@ class LocalMatch : public Match
 private:
 	struct Layer {
 		Animation* animation;
-		Point position;
+		geometry::Point position;
 		double depth;
 
-		Layer(Animation* animation, Point position, double depth)
+		Layer(Animation* animation, geometry::Point position, double depth)
 			:animation(animation), position(position), depth(depth)
 		{}
 		Layer(rapidxml::xml_node<>* node, SDL_Renderer* renderer)
@@ -31,13 +31,13 @@ private:
 			std::string path = node->first_attribute("path")->value();
 			animation = new Animation(node, ASSETS_PATH + path, renderer);
 
-			position = Point(position_x, position_y);
+			position = geometry::Point(position_x, position_y);
 		}
 	};
 
 
 	// Camera
-	Point camera = Point(0, 0);
+	geometry::Point camera = geometry::Point(0, 0);
 
 	int posToCameraX(double x);
 	int posToCameraY(double y);
@@ -48,8 +48,8 @@ private:
 	std::map<Actor*, ActorAnimations*> animations;
 
 	void DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color);
-	void DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax = 1);
-	void DrawSprite(SDL_Texture* sprite, Rectangle* rectangle);
+	void DrawSpriteCentered(SDL_Texture* sprite, geometry::Point position, int width, int height, double paralax = 1);
+	void DrawSprite(SDL_Texture* sprite, geometry::Rectangle* rectangle);
 	void CreateBackgroundTexture();
 
 	// Controle
@@ -62,7 +62,7 @@ private:
 public:
 	LocalMatch(Window* window, std::string map, int player_index);
 
-	void addLayer(Animation* animation, Point position, double depth);
+	void addLayer(Animation* animation, geometry::Point position, double depth);
 
 	Window* GetWindow();
 

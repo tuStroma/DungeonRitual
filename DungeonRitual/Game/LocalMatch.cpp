@@ -12,9 +12,9 @@ int LocalMatch::posToCameraY(double y)
 
 void LocalMatch::DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color)
 {
-	Shape* shape = obj->GetShape();
+	geometry::Shape* shape = obj->GetShape();
 
-	if (Rectangle* r = dynamic_cast<Rectangle*>(shape))
+	if (geometry::Rectangle* r = dynamic_cast<geometry::Rectangle*>(shape))
 	{
 		SurfacePainter::DrawRectangleCentered(	surface,
 												posToCameraX(obj->Position().X()) / PIXEL_SCALEUP,
@@ -23,7 +23,7 @@ void LocalMatch::DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color)
 												(int)(r->Height() * PIXELS_IN_METER),
 												color);
 	}
-	else if (Segment* s = dynamic_cast<Segment*>(shape))
+	else if (geometry::Segment* s = dynamic_cast<geometry::Segment*>(shape))
 	{
 		for (int i = 0; i < 5; i++)
 			SurfacePainter::DrawLine(	surface,
@@ -39,7 +39,7 @@ void LocalMatch::DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color)
 	}
 }
 
-void LocalMatch::DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax)
+void LocalMatch::DrawSpriteCentered(SDL_Texture* sprite, geometry::Point position, int width, int height, double paralax)
 {
 	double match_width = width / PIXELS_IN_METER;
 	double match_height = height / PIXELS_IN_METER;
@@ -54,7 +54,7 @@ void LocalMatch::DrawSpriteCentered(SDL_Texture* sprite, Point position, int wid
 		height / PIXELS_IN_METER * DISTANCE_TO_PIXELS);
 }
 
-void LocalMatch::DrawSprite(SDL_Texture* sprite, Rectangle* rectangle)
+void LocalMatch::DrawSprite(SDL_Texture* sprite, geometry::Rectangle* rectangle)
 {
 	window->DrawSprite(sprite,
 		posToCameraX(rectangle->Position().X()),
@@ -69,7 +69,7 @@ void LocalMatch::CreateBackgroundTexture()
 	int left = 0, right = 0, up = 0, down = 0;
 	for (GameObject* go : walls)
 	{
-		Rectangle* r = static_cast<Rectangle*>(go->GetShape());
+		geometry::Rectangle* r = static_cast<geometry::Rectangle*>(go->GetShape());
 		left = fmin(left, r->Left() * PIXELS_IN_METER);
 		right = fmax(right, r->Right() * PIXELS_IN_METER);
 		up = fmax(up, r->Up() * PIXELS_IN_METER);
@@ -78,7 +78,7 @@ void LocalMatch::CreateBackgroundTexture()
 
 	for (Slope* sl : slopes)
 	{
-		Segment* s = static_cast<Segment*>(sl->GetShape());
+		geometry::Segment* s = static_cast<geometry::Segment*>(sl->GetShape());
 		left = fmin(left, s->LeftPoint().X() * PIXELS_IN_METER);
 		right = fmax(right, s->RightPoint().X() * PIXELS_IN_METER);
 		up = fmax(up, s->UpperPoint().Y() * PIXELS_IN_METER);
@@ -103,7 +103,7 @@ void LocalMatch::CreateBackgroundTexture()
 		DrawObject(surface, slope, blue);
 
 	Animation* animation = new Animation(surface, window->GetRenderer());
-	addLayer(animation, Point(0, 0), 1);
+	addLayer(animation, geometry::Point(0, 0), 1);
 }
 
 void LocalMatch::Input()
@@ -156,14 +156,14 @@ void LocalMatch::Update()
 		// Check colisions
 		for (GameObject* wall : walls)
 		{
-			Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)actor->GetShape(), *(Rectangle*)wall->GetShape());
+			geometry::Point connection = geometry::collisions::contact::RectangleToRectangle(*(geometry::Rectangle*)actor->GetShape(), *(geometry::Rectangle*)wall->GetShape());
 			actor->ResolveCollision(connection, wall);
 		}
 
 		// Slopes
 		for (Slope* slope : slopes)
 		{
-			Point connection = object_collisions::contact::ActorToSlope(*actor, *slope);
+			geometry::Point connection = object_collisions::contact::ActorToSlope(*actor, *slope);
 			actor->ResolveCollision(connection, slope);
 		}
 	}
@@ -221,7 +221,7 @@ LocalMatch::LocalMatch(Window* window, std::string map, int player_index)
 	}
 }
 
-void LocalMatch::addLayer(Animation* animation, Point position, double depth)
+void LocalMatch::addLayer(Animation* animation, geometry::Point position, double depth)
 {
 	background.push_back(Layer(animation, position, depth));
 }

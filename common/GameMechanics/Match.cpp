@@ -36,14 +36,14 @@ void Match::Update()
 		// Check colisions
 		for (GameObject* wall : walls)
 		{
-			Point connection = collisions::contact::RectangleToRectangle(*(Rectangle*)actor->GetShape(), *(Rectangle*)wall->GetShape());
+			geometry::Point connection = geometry::collisions::contact::RectangleToRectangle(*(geometry::Rectangle*)actor->GetShape(), *(geometry::Rectangle*)wall->GetShape());
 			actor->ResolveCollision(connection, wall);
 		}
 
 		// Slopes
 		for (Slope* slope : slopes)
 		{
-			Point connection = object_collisions::contact::ActorToSlope(*actor, *slope);
+			geometry::Point connection = object_collisions::contact::ActorToSlope(*actor, *slope);
 			actor->ResolveCollision(connection, slope);
 		}
 	}

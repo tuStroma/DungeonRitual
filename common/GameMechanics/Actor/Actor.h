@@ -30,7 +30,7 @@ private:
 
 public:
 	Actor();
-	Actor(Rectangle* shape)
+	Actor(geometry::Rectangle* shape)
 		:GameObject(shape)
 	{}
 	Actor(rapidxml::xml_node<>* node);
@@ -50,8 +50,8 @@ public:
 	void Move(double t);
 	void WalkOnObject(GameObject* floor, double t);
 
-	void ResolveCollision(Point connection, GameObject* obj);
+	void ResolveCollision(geometry::Point connection, GameObject* obj);
 
-	Rectangle* getRectangle();
+	geometry::Rectangle* getRectangle();
 };
 

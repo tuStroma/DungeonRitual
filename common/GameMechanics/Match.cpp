@@ -49,8 +49,7 @@ void Match::Update()
 	}
 }
 
-Match::Match(std::string map, int player_index)
-	:player_index(player_index)
+Match::Match(std::string map)
 {
 	// Load map
 	std::string map_path = MAPS_PATH + map + "/map.xml";
@@ -71,10 +70,6 @@ Match::Match(std::string map, int player_index)
 
 		node = node->next_sibling();
 	}
-
-	// Get the player controller
-	ActorController* pl = actors[player_index]->getController();
-	player_controller = dynamic_cast<OutsideController*>(pl);
 
 }
 

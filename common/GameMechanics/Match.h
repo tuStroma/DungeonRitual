@@ -19,8 +19,6 @@ protected:
 	bool quit = false;
 
 	// Game status
-	int player_index = 0;
-	OutsideController* player_controller = nullptr;
 
 	std::vector<Actor*> actors;
 	std::vector<GameObject*> walls;
@@ -40,7 +38,7 @@ protected:
 	Actor* LoadActor(rapidxml::xml_node<>* node, std::string character);
 
 public:
-	Match(std::string map, int player_index);
+	Match(std::string map);
 
 	void addObject(GameObject* object);
 	void addActor(Actor* actor);

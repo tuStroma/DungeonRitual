@@ -35,6 +35,8 @@ private:
 		}
 	};
 
+	int player_index = 0;
+	OutsideController* player_controller = nullptr;
 
 	// Camera
 	geometry::Point camera = geometry::Point(0, 0);

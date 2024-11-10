@@ -5,10 +5,12 @@ enum NetContext
 	// Match handling
 	FindGame,
 	GameFound,
-	Ready,
+	PlayerReady,
 	GameStart,
 	GameFinished,
-	LeaveGame
+	LeaveGame,
 
 	// Match communication
+	MoveAction,
+	GameState
 };

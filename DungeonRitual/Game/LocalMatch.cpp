@@ -192,7 +192,7 @@ void LocalMatch::Display()
 }
 
 LocalMatch::LocalMatch(Window* window, std::string map, int player_index)
-	:Match(map, player_index), event(new SDL_Event()), window(window)
+	:Match(map), event(new SDL_Event()), window(window), player_index(player_index)
 {
 	// Load map
 	std::string map_path = MAPS_PATH + map + "/map.xml";
@@ -219,6 +219,10 @@ LocalMatch::LocalMatch(Window* window, std::string map, int player_index)
 		ActorAnimations* animation_set = new ActorAnimations(actor, "Players/test", window->GetRenderer());
 		animations[actor] = animation_set;
 	}
+
+	// Get the player controller
+	ActorController* pl = actors[player_index]->getController();
+	player_controller = dynamic_cast<OutsideController*>(pl);
 }
 
 void LocalMatch::addLayer(Animation* animation, geometry::Point position, double depth)

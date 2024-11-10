@@ -48,6 +48,12 @@
 			width		="1"
 			height		="2"
 			is_player	="true"/>
+
+  <Actor	position_x	="1"
+			position_y	="2"
+			width		="1"
+			height		="2"
+			is_player	="true"/>
 </GameObjects> 
 <Layers>
 	<LayerAnimation	position_x	="0"

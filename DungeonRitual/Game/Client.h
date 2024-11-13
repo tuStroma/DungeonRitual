@@ -41,7 +41,7 @@ protected:
 
 			std::cout << "Starting new match with position [" << player_id << "]\n";
 			
-			match = new LocalMatch(window, "test", player_id);
+			match = new LocalMatch(window, "test", player_id, this);
 			//match = new LocalMatch(window, "test", 0);
 			//match->Start();
 			position = player_id;
@@ -55,6 +55,19 @@ protected:
 
 		// Match communication
 		case MoveAction:
+		{
+			if (!match)
+				break;
+
+			int player_id;
+			Action action;
+			msg->get(&player_id, sizeof(int));
+			msg->get(&action, sizeof(Action));
+
+			match->MakeActionAsPlayer(player_id, action);
+
+			break;
+		}
 		case GameState:
 		default: break;
 		}

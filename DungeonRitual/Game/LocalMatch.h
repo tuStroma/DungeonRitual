@@ -37,6 +37,10 @@ private:
 		}
 	};
 
+	// Online component
+	Client* game_client = nullptr;
+
+	// Controlls
 	int player_index = 0;
 	OutsideController* player_controller = nullptr;
 
@@ -59,16 +63,20 @@ private:
 	// Controle
 	SDL_Event* event;
 
+	void UserAction(Action action);
+
 	void Input();
 	void Update();
 	void Display();
 
 public:
-	LocalMatch(Window* window, std::string map, int player_index);
+	LocalMatch(Window* window, std::string map, int player_index, Client* game_client);
 
 	void addLayer(Animation* animation, geometry::Point position, double depth);
 
 	Window* GetWindow();
+
+	void MakeActionAsPlayer(int player_id, Action action);
 
 	void Start() override;
 };

@@ -107,22 +107,35 @@ void LocalMatch::CreateBackgroundTexture()
 	addLayer(animation, geometry::Point(0, 0), 1);
 }
 
+void LocalMatch::UserAction(Action action)
+{
+	player_controller->AddAction(action);
+
+	// Online component
+	if (game_client) // Send action to server
+	{
+		net::common::Message<NetContext> action_msg(MoveAction, sizeof(Action));
+		action_msg.put(&action, sizeof(action));
+		game_client->Send(action_msg);
+	}
+}
+
 void LocalMatch::Input()
 {
 	while (SDL_PollEvent(event)) {
 		switch (event->type) {
 		case SDL_KEYDOWN:
 			if (event->key.keysym.sym == SDLK_ESCAPE) quit = 1;
-			else if (event->key.keysym.sym == SDLK_a) player_controller->AddAction(Left);
-			else if (event->key.keysym.sym == SDLK_d) player_controller->AddAction(Right);
-			else if (event->key.keysym.sym == SDLK_s) player_controller->AddAction(Down);
-			else if (event->key.keysym.sym == SDLK_SPACE) player_controller->AddAction(Jump);
+			else if (event->key.keysym.sym == SDLK_a) UserAction(Left);
+			else if (event->key.keysym.sym == SDLK_d) UserAction(Right);
+			else if (event->key.keysym.sym == SDLK_s) UserAction(Down);
+			else if (event->key.keysym.sym == SDLK_SPACE) UserAction(Jump);
 			break;
 		case SDL_KEYUP:
-			if (event->key.keysym.sym == SDLK_a) player_controller->AddAction(StopLeft);
-			else if (event->key.keysym.sym == SDLK_d) player_controller->AddAction(StopRight);
-			else if (event->key.keysym.sym == SDLK_s) player_controller->AddAction(StopDown);
-			else if (event->key.keysym.sym == SDLK_SPACE) player_controller->AddAction(StopJump);
+			if (event->key.keysym.sym == SDLK_a) UserAction(StopLeft);
+			else if (event->key.keysym.sym == SDLK_d) UserAction(StopRight);
+			else if (event->key.keysym.sym == SDLK_s) UserAction(StopDown);
+			else if (event->key.keysym.sym == SDLK_SPACE) UserAction(StopJump);
 			break;
 		case SDL_QUIT:
 			quit = 1;
@@ -192,8 +205,8 @@ void LocalMatch::Display()
 	window->DisplayFrame();
 }
 
-LocalMatch::LocalMatch(Window* window, std::string map, int player_index)
-	:Match(map), event(new SDL_Event()), window(window), player_index(player_index)
+LocalMatch::LocalMatch(Window* window, std::string map, int player_index, Client* game_client)
+	:Match(map), event(new SDL_Event()), window(window), player_index(player_index), game_client(game_client)
 {
 	// Load map
 	std::string map_path = MAPS_PATH + map + "/map.xml";
@@ -234,6 +247,14 @@ void LocalMatch::addLayer(Animation* animation, geometry::Point position, double
 Window* LocalMatch::GetWindow()
 {
 	return window;
+}
+
+void LocalMatch::MakeActionAsPlayer(int player_id, Action action)
+{
+	OutsideController* controller = dynamic_cast<OutsideController*>(actors[player_id]->getController());
+
+	if (controller)
+		controller->AddAction(action);
 }
 
 void LocalMatch::Start()

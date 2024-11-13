@@ -18,8 +18,10 @@ private:
 
 	void StartNewMatch(std::string map, int players_number)
 	{
+		std::cout << "Starting new match [" << match_id << "]\n";
 		ServerMatch* match = new ServerMatch(map);
 
+		std::cout << "Add players\n";
 		for (int i = 0; i < players_number; i++)
 		{
 			GameClient* client = queue.front(); queue.pop_front();
@@ -27,14 +29,20 @@ private:
 			client->JoinMatch(match, i);
 		}
 
+		std::cout << "Add match to game room\n";
 		game_room[match_id] = match;
 		match->StartInThread([&]() {game_room.erase(match_id); });
 		match_id++;
 
 		// Send info about game start
-		net::common::Message<NetContext> start_msg(GameStart, 0);
+		std::cout << "Send starting info\n";
 		match->ForEachPlayer([&](uint64_t id, GameClient* game_client) {
+			int player_id = game_client->getMatchId();
+
+			net::common::Message<NetContext> start_msg(GameStart, sizeof(int));
+			start_msg.put(&player_id, sizeof(int));
 			Send(start_msg, id);
+			std::cout << "Sent start info to player [" << player_id << "]\n";
 			});
 	}
 
@@ -86,6 +94,7 @@ protected:
 		{
 		case FindGame:
 		{
+			std::cout << "Client " << sender << " joined the queue\n";
 			queue.push_back(players[sender]);
 
 			if (queue.size() >= 2)
@@ -93,6 +102,7 @@ protected:
 
 			break;
 		}
+		case PlayerReady:
 		case LeaveGame: break;
 
 		// In game

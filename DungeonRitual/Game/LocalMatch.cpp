@@ -1,4 +1,5 @@
 #include "LocalMatch.h"
+#include "Client.h"
 
 int LocalMatch::posToCameraX(double x)
 {

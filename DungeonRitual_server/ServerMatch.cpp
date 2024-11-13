@@ -46,7 +46,10 @@ void ServerMatch::Start()
 void ServerMatch::ForEachPlayer(std::function<void(uint64_t, GameClient*)> const& execute)
 {
 	for (auto& [player_id, game_client] : players)
+	{
+		std::cout << "Execute for [" << player_id << "]\n";
 		execute(player_id, game_client);
+	}
 }
 
 OutsideController* ServerMatch::getPlayerController(uint64_t client_id)

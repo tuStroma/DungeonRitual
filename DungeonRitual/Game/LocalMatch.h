@@ -12,6 +12,8 @@
 #include "../Display/Animation.h"
 #include "../Display/SurfacePainter.h"
 
+class Client;
+
 class LocalMatch : public Match
 {
 private:

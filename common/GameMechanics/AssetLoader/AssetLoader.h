@@ -40,7 +40,7 @@ public:
 
         float width = right - left;
         float height = up - down;
-        Point centre(left + width / 2, down + height / 2);
+        geometry::Point centre(left + width / 2, down + height / 2);
 
         std::cout << "Wall"
             << "\n\tLeft:\t" << left
@@ -49,7 +49,7 @@ public:
             << "\n\tDown:\t" << down
             << "\n";
 
-        return new GameObject(new Rectangle(centre, width, height));
+        return new GameObject(new geometry::Rectangle(centre, width, height));
     }
 
     static Slope* LoadSlope(rapidxml::xml_node<>* node)
@@ -69,7 +69,7 @@ public:
             << "\n\tPenetrable:\t" << (penetrable ? "true" : "false")
             << "\n";
 
-        return new Slope(new Segment(Point(begin_x, begin_y), Point(end_x - begin_x, end_y - begin_y)), penetrable);
+        return new Slope(new geometry::Segment(geometry::Point(begin_x, begin_y), geometry::Point(end_x - begin_x, end_y - begin_y)), penetrable);
     }
 
     // Static helpers

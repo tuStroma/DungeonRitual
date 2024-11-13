@@ -1,39 +1,43 @@
 #pragma once
 #include "Shape.h"
-class Segment : public Shape
+
+namespace geometry
 {
-private:
-	Point vector;
-
-public:
-	Segment() {}
-	Segment(Point position, Point vector)
-		: Shape(position), vector(vector)
-	{}
-
-	// Getters
-	Point Vector() { return vector; }
-	Point EndPoint()
+	class Segment : public Shape
 	{
-		return Point(position.X() + vector.X(), position.Y() + vector.Y());
-	}
+	private:
+		Point vector;
 
-	Point LeftPoint()	{ return vector.X() > 0 ? Position() : EndPoint(); }
-	Point RightPoint()	{ return vector.X() > 0 ? EndPoint() : Position(); }
-	Point LowerPoint()	{ return vector.Y() > 0 ? Position() : EndPoint(); }
-	Point UpperPoint()	{ return vector.Y() > 0 ? EndPoint() : Position(); }
+	public:
+		Segment() {}
+		Segment(Point position, Point vector)
+			: Shape(position), vector(vector)
+		{}
 
-	// Geometry
-	bool Contains(Point p) // Assumes that p lies on the same line as segment
-	{
-		Point end = EndPoint();
+		// Getters
+		Point Vector() { return vector; }
+		Point EndPoint()
+		{
+			return Point(position.X() + vector.X(), position.Y() + vector.Y());
+		}
 
-		double left = fmin(position.X(), end.X());
-		double right = fmax(position.X(), end.X());
+		Point LeftPoint() { return vector.X() > 0 ? Position() : EndPoint(); }
+		Point RightPoint() { return vector.X() > 0 ? EndPoint() : Position(); }
+		Point LowerPoint() { return vector.Y() > 0 ? Position() : EndPoint(); }
+		Point UpperPoint() { return vector.Y() > 0 ? EndPoint() : Position(); }
 
-		double down = fmin(position.Y(), end.Y());
-		double up = fmax(position.Y(), end.Y());
+		// Geometry
+		bool Contains(Point p) // Assumes that p lies on the same line as segment
+		{
+			Point end = EndPoint();
 
-		return p.X() >= left && p.X() <= right && p.Y() >= down && p.Y() <= up;
-	}
-};
+			double left = fmin(position.X(), end.X());
+			double right = fmax(position.X(), end.X());
+
+			double down = fmin(position.Y(), end.Y());
+			double up = fmax(position.Y(), end.Y());
+
+			return p.X() >= left && p.X() <= right && p.Y() >= down && p.Y() <= up;
+		}
+	};
+} // geometry

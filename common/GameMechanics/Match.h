@@ -2,88 +2,47 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <chrono>
 
-#include "../Display/Window.h"
-#include "../Display/DisplayParameters.h"
-#include "../Display/Animation.h"
-#include "../Display/SurfacePainter.h"
 #include "AssetLoader/AssetLoader.h"
 #include "GameObject.h"
-#include "Actor.h"
+#include "Actor/Actor.h"
+#include "Actor/OutsideController.h"
 
 #include "ObjectCollisions.h"
 
 class Match
 {
-private:
-	struct Layer {
-		Animation* animation;
-		Point position;
-		double depth;
-
-		Layer(Animation* animation, Point position, double depth)
-			:animation(animation), position(position), depth(depth)
-		{}
-		Layer(rapidxml::xml_node<>* node, SDL_Renderer* renderer)
-		{
-			double position_x = atof(node->first_attribute("position_x")->value());
-			double position_y = atof(node->first_attribute("position_y")->value());
-			depth = atof(node->first_attribute("depth")->value());
-			std::string path = node->first_attribute("path")->value();
-			animation = new Animation(node, ASSETS_PATH + path, renderer);
-
-			position = Point(position_x, position_y);
-		}
-	};
+protected:
 
 
 	bool quit = false;
 
 	// Game status
-	Actor* player = nullptr;
 
+	std::vector<Actor*> actors;
 	std::vector<GameObject*> walls;
 	std::vector<Slope*> slopes;
 
-	double v_x = 1;
-	double v_y = 0;
-
 	// Time
-	int t1 = 0, t2 = 0;
-	int time_count = 0;
+	std::chrono::system_clock::time_point t1, t2;
+	std::chrono::system_clock::time_point time_count;
 	int frame_count = 0;
 
-	// Camera
-	Point camera = Point(0, 0);
-
-	int posToCameraX(double x);
-	int posToCameraY(double y);
-
-	// Display
-	Window* window;
-	std::list<Layer> background;
-
-	void DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color);
-	void DrawSpriteCentered(SDL_Texture* sprite, Point position, int width, int height, double paralax = 1);
-	void DrawSprite(SDL_Texture* sprite, Rectangle* rectangle);
-	void CreateBackgroundTexture();
-
-	// Controle
-	SDL_Event* event;
+	long long TimeDelta(std::chrono::system_clock::time_point end,
+						std::chrono::system_clock::time_point begin);
 
 	void Input();
 	void Update();
-	void Display();
+
+	Actor* LoadActor(rapidxml::xml_node<>* node, std::string character);
 
 public:
-	Match(Window* window, std::string map);
+	Match(std::string map);
 
 	void addObject(GameObject* object);
-	void addActor(Actor* actor, bool is_player);
-	void addLayer(Animation* animation, Point position, double depth);
+	void addActor(Actor* actor);
 
-	Window* GetWindow();
-
-	void Start();
+	virtual void Start();
 };
 

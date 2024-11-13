@@ -5,11 +5,11 @@
 class GameObject
 {
 protected:
-	Shape* shape = nullptr;
+	geometry::Shape* shape = nullptr;
 
 public:
 	GameObject() {}
-	GameObject(Shape* shape)
+	GameObject(geometry::Shape* shape)
 		:shape(shape)
 	{}
 	virtual ~GameObject()
@@ -17,7 +17,7 @@ public:
 		delete shape;
 	}
 
-	Point Position() { return shape->Position(); }
-	Shape* GetShape() { return shape; }
+	geometry::Point Position() { return shape->Position(); }
+	geometry::Shape* GetShape() { return shape; }
 };
 

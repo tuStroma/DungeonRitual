@@ -1,10 +1,11 @@
 #include "Actor.h"
+#include "OutsideController.h"
 
 Actor::Actor()
 {
 }
 
-Actor::Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* renderer)
+Actor::Actor(rapidxml::xml_node<>* node)
 {
 	// Load Actor object
 	float position_x = atof(node->first_attribute("position_x")->value());
@@ -14,7 +15,7 @@ Actor::Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* re
 
 	bool is_player = AssetLoader::BoolFromAttribute(node, "is_player");
 
-	Point centre(position_x, position_y);
+	geometry::Point centre(position_x, position_y);
 
 	std::cout << "Actor"
 		<< "\n\tPosition_x:\t" << position_x
@@ -23,23 +24,10 @@ Actor::Actor(rapidxml::xml_node<>* node, std::string character, SDL_Renderer* re
 		<< "\n\tHeight:\t" << height
 		<< "\n";
 
-	this->shape = new Rectangle(centre, width, height);
+	this->shape = new geometry::Rectangle(centre, width, height);
 
-	// Load animations
-	std::string animation_path = ACTORS_PATH + character + "/animations.xml";
-	AssetLoader loader(animation_path);
-	rapidxml::xml_document<>* doc = loader.GetDocument();
-
-	idle = LoadAnimation(doc, character, "Idle", renderer);
-}
-
-Animation* Actor::LoadAnimation(rapidxml::xml_document<>* doc,
-								std::string character,
-								std::string animation,
-								SDL_Renderer* renderer)
-{
-	rapidxml::xml_node<>* character_node = doc->first_node(animation.c_str());
-	return new Animation(character_node, ACTORS_PATH + character + "/" + animation + "/", renderer);
+	// Controller
+	controller = new OutsideController();
 }
 
 void Actor::Jump(bool jump)
@@ -51,6 +39,11 @@ void Actor::Jump(bool jump)
 	}
 	
 	jumping = jump;
+}
+
+void Actor::TakeAction()
+{
+	controller->TakeAction(this);
 }
 
 void Actor::Move(double t)
@@ -71,31 +64,31 @@ void Actor::Move(double t)
 	vertical_speed += t * GRAVITY;
 	vertical_speed = MAX_FALL_SPEED > vertical_speed ? MAX_FALL_SPEED : vertical_speed;
 
-	shape->MoveBy(Point(vx * t, vertical_speed * t));
+	shape->MoveBy(geometry::Point(vx * t, vertical_speed * t));
 }
 
 void Actor::WalkOnObject(GameObject* floor, double t)
 {
-	Shape* floor_shape = floor->GetShape();
+	geometry::Shape* floor_shape = floor->GetShape();
 
 	double vx = 0;
 	double vy = 0;
 
-	if (Rectangle* r = dynamic_cast<Rectangle*>(floor_shape))
+	if (geometry::Rectangle* r = dynamic_cast<geometry::Rectangle*>(floor_shape))
 	{
 		if (moving_left && !moving_right) vx = -speed;
 		else if (!moving_left && moving_right) vx = speed;
 
-		shape->MoveBy(Point(vx * t, 0));
+		shape->MoveBy(geometry::Point(vx * t, 0));
 
 		// Check if still standing on
 		double x_distance = fabs(shape->Position().X() - r->Position().X());
-		double standing_width = (((Rectangle*)shape)->Width() + r->Width()) / 2;
+		double standing_width = (((geometry::Rectangle*)shape)->Width() + r->Width()) / 2;
 
 		if (x_distance >= standing_width)
 			standing_on = nullptr;
 	}
-	if (Segment* s = dynamic_cast<Segment*>(floor_shape))
+	if (geometry::Segment* s = dynamic_cast<geometry::Segment*>(floor_shape))
 	{
 		Slope* slope = dynamic_cast<Slope*>(floor);
 
@@ -105,7 +98,7 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 
 		// Slope top
 		double feet_y = Position().Y() - getRectangle()->Height() / 2;
-		Point slope_top = s->Vector().Y() >=0 ? s->EndPoint() : s->Position();
+		geometry::Point slope_top = s->Vector().Y() >=0 ? s->EndPoint() : s->Position();
 
 
 
@@ -114,7 +107,7 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 			if (moving_left && !moving_right) vx = -speed;
 			else if (!moving_left && moving_right) vx = speed;
 
-			shape->MoveBy(Point(vx * t, 0));
+			shape->MoveBy(geometry::Point(vx * t, 0));
 
 			// Check if still standing on
 			if (slope->isHorisontal())
@@ -144,7 +137,7 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 		if (slope->isLeftSlope())
 			vy = -vy;
 
-		shape->MoveBy(Point(vx * t, vy * t));
+		shape->MoveBy(geometry::Point(vx * t, vy * t));
 
 		// Check if still standing on
 		double feet_x = Position().X() - getRectangle()->Width() / 2;
@@ -158,15 +151,15 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 	}
 }
 
-void Actor::ResolveCollision(Point connection, GameObject* obj)
+void Actor::ResolveCollision(geometry::Point connection, GameObject* obj)
 {
 	double con_x = connection.X();
 	double con_y = connection.Y();
 	if (isnan(con_x) || isnan(con_y))
 		return;
 
-	double lower_edge = shape->Position().Y() - ((Rectangle*)shape)->Height() / 2;
-	double higher_edge = shape->Position().Y() + ((Rectangle*)shape)->Height() / 2;
+	double lower_edge = shape->Position().Y() - ((geometry::Rectangle*)shape)->Height() / 2;
+	double higher_edge = shape->Position().Y() + ((geometry::Rectangle*)shape)->Height() / 2;
 
 	if (con_y <= lower_edge)
 	{
@@ -177,12 +170,7 @@ void Actor::ResolveCollision(Point connection, GameObject* obj)
 		vertical_speed = 0;
 }
 
-Rectangle* Actor::getRectangle()
+geometry::Rectangle* Actor::getRectangle()
 {
-	return dynamic_cast<Rectangle*>(shape);
-}
-
-Animation* Actor::getAnimation()
-{
-	return idle;
+	return dynamic_cast<geometry::Rectangle*>(shape);
 }

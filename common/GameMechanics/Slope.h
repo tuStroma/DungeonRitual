@@ -13,7 +13,7 @@ private:
 
 public:
 	Slope() {}
-	Slope(Segment* shape, bool penetrable = true)
+	Slope(geometry::Segment* shape, bool penetrable = true)
 		:GameObject(shape), is_penetrable(penetrable)
 	{
 		double dx = fabs(shape->Vector().X());
@@ -25,9 +25,9 @@ public:
 		horisontal_movement_component = dx / c;
 	}
 
-	Segment* getSegment()
+	geometry::Segment* getSegment()
 	{
-		return dynamic_cast<Segment*>(shape);
+		return dynamic_cast<geometry::Segment*>(shape);
 	}
 
 	double VerticalMove()
@@ -47,7 +47,7 @@ public:
 		if (isVertical() || isHorisontal())
 			return false;
 
-		Point vector = getSegment()->Vector();
+		geometry::Point vector = getSegment()->Vector();
 
 		return vector.X() > 0 == vector.Y() > 0;
 	}
@@ -56,7 +56,7 @@ public:
 		if (isVertical() || isHorisontal())
 			return false;
 
-		Point vector = getSegment()->Vector();
+		geometry::Point vector = getSegment()->Vector();
 
 		return vector.X() > 0 != vector.Y() > 0;
 	}
@@ -68,7 +68,7 @@ public:
 		if (isVertical())
 			return getSegment()->UpperPoint().Y();
 
-		Line slope_line = Line(*getSegment());
+		geometry::Line slope_line = geometry::Line(*getSegment());
 		return slope_line.Y(x);
 	}
 };

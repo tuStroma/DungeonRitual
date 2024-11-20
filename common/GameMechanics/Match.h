@@ -33,7 +33,9 @@ protected:
 						std::chrono::system_clock::time_point begin);
 
 	void Input();
-	void Update();
+	// Returns time delta in [s]
+	double UpdateTime();
+	void UpdateState(double time_delta);
 
 	Actor* LoadActor(rapidxml::xml_node<>* node, std::string character);
 
@@ -42,6 +44,9 @@ public:
 
 	void addObject(GameObject* object);
 	void addActor(Actor* actor);
+
+	Data* SerializeGameState();
+	void DeserializeGameState(Data* data);
 
 	virtual void Start();
 };

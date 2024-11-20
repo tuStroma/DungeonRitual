@@ -174,3 +174,35 @@ geometry::Rectangle* Actor::getRectangle()
 {
 	return dynamic_cast<geometry::Rectangle*>(shape);
 }
+
+Data* Actor::Serialize()
+{
+	size_t size = SerializationSize();
+	Data* data = new Data(size);
+
+	geometry::Point position = Position();
+
+	data->put(&position, sizeof(geometry::Point));
+	data->put(&vertical_speed, sizeof(double));
+	return data;
+}
+
+size_t Actor::SerializationSize()
+{
+	size_t size = sizeof(geometry::Point) + sizeof(double);
+	return size;
+}
+
+void Actor::Deserialize(Data* data)
+{
+	geometry::Point position;
+	double vertical_speed;
+
+	// Extract data
+	data->get(&position, sizeof(geometry::Point));
+	data->get(&vertical_speed, sizeof(double));
+
+	// Update state
+	shape->MoveTo(position);
+	this->vertical_speed = vertical_speed;
+}

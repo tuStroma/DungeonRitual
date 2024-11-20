@@ -1,6 +1,12 @@
 #include "Game.h"
 #include "Client.h"
 
+#define LOCAL_HOST "127.0.0.1"
+#define LOCAL_NETWORK "192.168.1.77"
+
+#define SERVER_IP LOCAL_HOST
+#define SERVER_PORT 60000
+
 Game::Game()
 	:window(new Window(1200, 800))
 {}
@@ -11,7 +17,7 @@ void Game::Launch()
 	//match->Start();
 
 	Client* client = new Client(window);
-	client->Connect("127.0.0.1", 60000);
+	client->Connect(SERVER_IP, SERVER_PORT);
 
 	client->FindMatch();
 

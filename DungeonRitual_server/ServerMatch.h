@@ -15,6 +15,7 @@ private:
 	std::thread thread;
 
 	void Input();
+	void Update();
 
 	
 public:

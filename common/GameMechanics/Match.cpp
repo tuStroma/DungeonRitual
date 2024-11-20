@@ -10,20 +10,8 @@ void Match::Input()
 	
 }
 
-void Match::Update()
+void Match::UpdateState(double time_delta)
 {
-	// Time delta
-	t2 = std::chrono::system_clock::now();
-	double delta = TimeDelta(t2, t1) * 0.000001;
-	t1 = t2;
-	frame_count++;
-	if (TimeDelta(t2, time_count) >= 1000000)
-	{
-		std::cout << frame_count << "\n";
-		frame_count = 0;
-		time_count = t2;
-	}
-
 	//// Update Game state
 
 	// Move all objects
@@ -31,7 +19,7 @@ void Match::Update()
 	{
 		actor->TakeAction();
 
-		actor->Move(delta);
+		actor->Move(time_delta);
 
 		// Check colisions
 		for (GameObject* wall : walls)
@@ -47,6 +35,17 @@ void Match::Update()
 			actor->ResolveCollision(connection, slope);
 		}
 	}
+}
+
+double Match::UpdateTime()
+{
+	// Time delta
+	t2 = std::chrono::system_clock::now();
+	double delta = TimeDelta(t2, t1) * 0.000001;
+	t1 = t2;
+	frame_count++;
+
+	return delta;
 }
 
 Match::Match(std::string map)
@@ -86,6 +85,41 @@ void Match::addActor(Actor* actor)
 	actors.push_back(actor);
 }
 
+Data* Match::SerializeGameState()
+{
+	size_t size = sizeof(size_t) + actors.size() * Actor::SerializationSize();
+	Data* serialized = new Data(size);
+	size_t actors_num = actors.size();
+	serialized->put(&actors_num, sizeof(size_t));
+
+	// Serialize actors
+	for (Actor* actor : actors)
+	{
+		Data* serialized_actor = actor->Serialize();
+		serialized->put(serialized_actor);
+	}
+
+	return serialized;
+}
+
+void Match::DeserializeGameState(Data* data)
+{
+	size_t actors_num;
+
+	data->get(&actors_num, sizeof(size_t));
+
+	// Deserialize actors
+	for (int i = 0; i < actors_num; i++)
+	{
+		Data* actor_data = data->get(Actor::SerializationSize());
+		if (!actor_data)
+			continue;
+
+		actors[i]->Deserialize(actor_data);
+		delete actor_data;
+	}
+}
+
 void Match::Start()
 {
 	t1 = std::chrono::system_clock::now();
@@ -96,6 +130,6 @@ void Match::Start()
 		Input();
 
 		// Update game state
-		Update();
+		UpdateState(UpdateTime());
 	}
 }

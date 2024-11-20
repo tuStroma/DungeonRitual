@@ -11,6 +11,21 @@ void ServerMatch::Input()
 	}
 }
 
+void ServerMatch::Update()
+{
+	double time_delta = UpdateTime();
+
+	// Print frames
+	if (TimeDelta(t2, time_count) >= 1000000)
+	{
+		std::cout << frame_count << "\n";
+		frame_count = 0;
+		time_count = t2;
+	}
+
+	UpdateState(time_delta);
+}
+
 ServerMatch::ServerMatch(std::string map)
 	:Match(map)
 {}
@@ -46,10 +61,7 @@ void ServerMatch::Start()
 void ServerMatch::ForEachPlayer(std::function<void(uint64_t, GameClient*)> const& execute)
 {
 	for (auto& [player_id, game_client] : players)
-	{
-		std::cout << "Execute for [" << player_id << "]\n";
 		execute(player_id, game_client);
-	}
 }
 
 OutsideController* ServerMatch::getPlayerController(uint64_t client_id)

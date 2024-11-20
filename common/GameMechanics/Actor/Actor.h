@@ -8,6 +8,8 @@
 
 #include "../AssetLoader/AssetLoader.h"
 
+#include "../../../common/Data.h"
+
 class ActorController;
 class OutsideController;
 
@@ -26,7 +28,7 @@ private:
 	bool jumping = false;
 	GameObject* standing_on = nullptr;
 
-	ActorController* controller;
+	ActorController* controller = nullptr;
 
 public:
 	Actor();
@@ -53,5 +55,10 @@ public:
 	void ResolveCollision(geometry::Point connection, GameObject* obj);
 
 	geometry::Rectangle* getRectangle();
+
+	Data* Serialize();
+	static size_t SerializationSize();
+
+	void Deserialize(Data* data);
 };
 

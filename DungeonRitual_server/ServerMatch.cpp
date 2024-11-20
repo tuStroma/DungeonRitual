@@ -1,5 +1,19 @@
 #include "ServerMatch.h"
 #include "GameClient.h"
+#include "Server.h"
+
+void ServerMatch::SendGameState()
+{
+	Data* state = SerializeGameState();
+
+	net::common::Message<NetContext> state_msg(GameState, state->getSize());
+	state_msg.put(state->getData(), state->getSize());
+
+	ForEachPlayer([&](uint64_t player_id, GameClient* client)
+		{
+			server->Send(state_msg, player_id);
+		});
+}
 
 void ServerMatch::Input()
 {
@@ -15,6 +29,10 @@ void ServerMatch::Update()
 {
 	double time_delta = UpdateTime();
 
+	// Send game state to players
+	if (TimeDelta(t2, time_count) >= 1000000)
+		SendGameState();
+
 	// Print frames
 	if (TimeDelta(t2, time_count) >= 1000000)
 	{
@@ -26,8 +44,8 @@ void ServerMatch::Update()
 	UpdateState(time_delta);
 }
 
-ServerMatch::ServerMatch(std::string map)
-	:Match(map)
+ServerMatch::ServerMatch(std::string map, Server* server)
+	:Match(map), server(server)
 {}
 
 void ServerMatch::AddPlayer(GameClient * player)

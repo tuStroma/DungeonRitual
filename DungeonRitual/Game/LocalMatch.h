@@ -3,6 +3,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <semaphore>
 
 #include "../../common/GameMechanics/Match.h"
 
@@ -39,6 +40,9 @@ private:
 
 	// Online component
 	Client* game_client = nullptr;
+	Data* server_game_state = nullptr;
+
+	std::binary_semaphore server_state_lock;
 
 	// Controlls
 	int player_index = 0;
@@ -65,6 +69,8 @@ private:
 
 	void UserAction(Action action);
 
+	void ServerStateUpdate();
+
 	void Input();
 	void Update();
 	void Display();
@@ -76,8 +82,11 @@ public:
 
 	Window* GetWindow();
 
-	void MakeActionAsPlayer(int player_id, Action action);
-
 	void Start() override;
+
+	// Online component
+
+	void MakeActionAsPlayer(int player_id, Action action);
+	void LoadServerState(Data* server_state);
 };
 

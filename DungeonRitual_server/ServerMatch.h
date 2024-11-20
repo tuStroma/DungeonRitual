@@ -6,6 +6,7 @@
 #include "../common/GameMechanics/Match.h"
 
 class GameClient;
+class Server;
 
 class ServerMatch : public Match
 {
@@ -14,12 +15,16 @@ private:
 	std::map<uint64_t, OutsideController*> controllers;
 	std::thread thread;
 
+	Server* server;
+
+	void SendGameState();
+
 	void Input();
 	void Update();
 
 	
 public:
-	ServerMatch(std::string map);
+	ServerMatch(std::string map, Server* server);
 
 	void AddPlayer(GameClient* player);
 

@@ -12,6 +12,7 @@ private:
 
 public:
 	Data(size_t size)
+		:size(size)
 	{
 		data = malloc(size);
 		if (!data)
@@ -29,7 +30,7 @@ public:
 	bool put(void* source, size_t size)
 	{
 		uint32_t next_offset = write_offset + size;
-		if (next_offset > size)
+		if (next_offset > this->size)
 			return false;
 
 		std::memcpy((char*)data + write_offset, source, size);

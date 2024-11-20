@@ -19,7 +19,7 @@ private:
 	void StartNewMatch(std::string map, int players_number)
 	{
 		std::cout << "Starting new match [" << match_id << "]\n";
-		ServerMatch* match = new ServerMatch(map);
+		ServerMatch* match = new ServerMatch(map, this);
 
 		std::cout << "Add players\n";
 		for (int i = 0; i < players_number; i++)

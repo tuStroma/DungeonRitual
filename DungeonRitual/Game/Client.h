@@ -69,6 +69,16 @@ protected:
 			break;
 		}
 		case GameState:
+		{
+			Data* server_state = new Data(msg->getSize());
+			msg->get(server_state->getData(), server_state->getSize());
+
+			if (match)
+				match->LoadServerState(server_state);
+
+			std::cout << "Game state update!\n";
+			break;
+		}
 		default: break;
 		}
 

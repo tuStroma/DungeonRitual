@@ -120,6 +120,21 @@ void LocalMatch::UserAction(Action action)
 	}
 }
 
+void LocalMatch::ServerStateUpdate()
+{
+	server_state_lock.acquire();
+
+	if (server_game_state)
+	{
+		DeserializeGameState(server_game_state);
+
+		delete server_game_state;
+		server_game_state = nullptr;
+	}
+
+	server_state_lock.release();
+}
+
 void LocalMatch::Input()
 {
 	while (SDL_PollEvent(event)) {
@@ -147,10 +162,9 @@ void LocalMatch::Input()
 void LocalMatch::Update()
 {
 	// Time delta
-	t2 = std::chrono::system_clock::now();
-	double delta = TimeDelta(t2, t1) * 0.000001;
-	t1 = t2;
-	frame_count++;
+	double time_delta = UpdateTime();
+
+	// Print frames
 	if (TimeDelta(t2, time_count) >= 1000000)
 	{
 		std::cout << frame_count << "\n";
@@ -158,29 +172,9 @@ void LocalMatch::Update()
 		time_count = t2;
 	}
 
-	//// Update Game state
+	ServerStateUpdate();
 
-	// Move all objects
-	for (Actor* actor : actors)
-	{
-		actor->TakeAction();
-
-		actor->Move(delta);
-
-		// Check colisions
-		for (GameObject* wall : walls)
-		{
-			geometry::Point connection = geometry::collisions::contact::RectangleToRectangle(*(geometry::Rectangle*)actor->GetShape(), *(geometry::Rectangle*)wall->GetShape());
-			actor->ResolveCollision(connection, wall);
-		}
-
-		// Slopes
-		for (Slope* slope : slopes)
-		{
-			geometry::Point connection = object_collisions::contact::ActorToSlope(*actor, *slope);
-			actor->ResolveCollision(connection, slope);
-		}
-	}
+	UpdateState(time_delta);
 
 	// Camera position
 	camera = actors[player_index]->Position();
@@ -206,7 +200,12 @@ void LocalMatch::Display()
 }
 
 LocalMatch::LocalMatch(Window* window, std::string map, int player_index, Client* game_client)
-	:Match(map), event(new SDL_Event()), window(window), player_index(player_index), game_client(game_client)
+	:Match(map),
+	event(new SDL_Event()),
+	window(window),
+	player_index(player_index),
+	game_client(game_client),
+	server_state_lock(std::binary_semaphore(1))
 {
 	// Load map
 	std::string map_path = MAPS_PATH + map + "/map.xml";
@@ -255,6 +254,18 @@ void LocalMatch::MakeActionAsPlayer(int player_id, Action action)
 
 	if (controller)
 		controller->AddAction(action);
+}
+
+void LocalMatch::LoadServerState(Data* server_state)
+{
+	server_state_lock.acquire();
+
+	if (server_game_state)
+		delete server_game_state;
+
+	server_game_state = server_state;
+
+	server_state_lock.release();
 }
 
 void LocalMatch::Start()

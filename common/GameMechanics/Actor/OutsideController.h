@@ -1,6 +1,6 @@
 #pragma once
 #include "ActorController.h"
-#include <list>
+#include "server_infrastructure.h"
 
 //class Actor {};
 
@@ -20,7 +20,8 @@ enum Action
 class OutsideController : public ActorController
 {
 private:
-	std::list<Action> actions;
+	//std::list<Action> actions;
+	net::common::ThreadSharedQueue<Action> actions;
 
 
 public:
@@ -29,7 +30,8 @@ public:
 
 	void TakeAction(Actor* actor) override
 	{
-		for (Action action : actions)
+		Action action;
+		while (actions.pop(&action))
 		{
 			switch (action)
 			{
@@ -53,12 +55,10 @@ public:
 			default: break;
 			}
 		}
-
-		actions.clear();
 	}
 
 	void AddAction(Action action)
 	{
-		actions.push_back(action);
+		actions.push(action);
 	}
 };

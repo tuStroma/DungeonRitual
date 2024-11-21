@@ -21,7 +21,6 @@ private:
 		std::cout << "Starting new match [" << match_id << "]\n";
 		ServerMatch* match = new ServerMatch(map, this);
 
-		std::cout << "Add players\n";
 		for (int i = 0; i < players_number; i++)
 		{
 			GameClient* client = queue.front(); queue.pop_front();
@@ -29,20 +28,17 @@ private:
 			client->JoinMatch(match, i);
 		}
 
-		std::cout << "Add match to game room\n";
 		game_room[match_id] = match;
 		match->StartInThread([&]() {game_room.erase(match_id); });
 		match_id++;
 
 		// Send info about game start
-		std::cout << "Send starting info\n";
 		match->ForEachPlayer([&](uint64_t id, GameClient* game_client) {
 			int player_id = game_client->getMatchId();
 
 			net::common::Message<NetContext> start_msg(GameStart, sizeof(int));
 			start_msg.put(&player_id, sizeof(int));
 			Send(start_msg, id);
-			std::cout << "Sent start info to player [" << player_id << "]\n";
 			});
 	}
 
@@ -112,6 +108,9 @@ protected:
 			msg->get(&action, sizeof(action));
 
 			PlayerTakesAction(sender, action);
+
+			std::string actions[] = {"Left","Right","Down","Jump","StopLeft","StopRight","StopDown","StopJump"};
+			std::cout << "Player [" << sender << "], action: " << actions[action] << "\n";
 			break;
 		}
 		default: break;

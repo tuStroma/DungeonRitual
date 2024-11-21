@@ -36,7 +36,7 @@ void ServerMatch::Update()
 	// Print frames
 	if (TimeDelta(t2, time_count) >= 1000000)
 	{
-		std::cout << frame_count << "\n";
+		//std::cout << frame_count << "\n";
 		frame_count = 0;
 		time_count = t2;
 	}

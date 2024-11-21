@@ -43,6 +43,9 @@ public:
 	void MoveDown(bool move)  { moving_down = move; }
 	void Jump(bool jump);
 
+	bool isMovingLeft() { return moving_left; }
+	bool isMovingRight() { return moving_right; }
+
 	void TakeAction();
 	ActorController* getController() { return controller; }
 

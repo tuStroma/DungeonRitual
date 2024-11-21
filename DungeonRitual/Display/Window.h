@@ -32,7 +32,7 @@ public:
 	}
 
 	// Draw
-	void DrawSprite(SDL_Texture* sprite, int x, int y, int width, int height)
+	void DrawSprite(SDL_Texture* sprite, int x, int y, int width, int height, double rotation = 0, SDL_RendererFlip flip = SDL_FLIP_NONE)
 	{
 		int begin_x = x - width / 2;
 		int begin_y = y + height / 2;
@@ -43,7 +43,7 @@ public:
 		dest.w = width;
 		dest.h = height;
 
-		SDL_RenderCopy(renderer, sprite, NULL, &dest);
+		SDL_RenderCopyEx(renderer, sprite, NULL, &dest, rotation, NULL, flip);
 	}
 
 	void DisplayFrame()

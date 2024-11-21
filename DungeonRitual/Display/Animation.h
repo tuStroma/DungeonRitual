@@ -71,6 +71,10 @@ private:
 	Frame* current = nullptr;
 	int time_counter = 0;
 
+	// Manipulations
+	double rotation = 0;
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+
 public:
 	Animation(rapidxml::xml_node<>* node, std::string asset_path, SDL_Renderer* renderer)
 	{
@@ -141,5 +145,23 @@ public:
 	int GetHeight()
 	{
 		return current->GetHeight();
+	}
+
+	double GetRotation()
+	{
+		return rotation;
+	}
+	SDL_RendererFlip GetFlip()
+	{
+		return flip;
+	}
+
+	void SetRotation(double rotation)
+	{
+		this->rotation = rotation;
+	}
+	void SetFlip(SDL_RendererFlip flip)
+	{
+		this->flip = flip;
 	}
 };

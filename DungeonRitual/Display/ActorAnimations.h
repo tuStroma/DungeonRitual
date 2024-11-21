@@ -20,6 +20,7 @@ private:
 
 public:
 	ActorAnimations(Actor* actor, std::string character, SDL_Renderer* renderer)
+		:actor(actor)
 	{
 		std::string animation_path = ACTORS_PATH + character + "/animations.xml";
 		AssetLoader loader(animation_path);
@@ -31,5 +32,17 @@ public:
 	Animation* getAnimation()
 	{
 		return idle;
+	}
+
+	void CheckState()
+	{
+		if (actor->isMovingLeft() == actor->isMovingRight())
+			return;
+
+		if (actor->isMovingLeft())
+			idle->SetFlip(SDL_FLIP_HORIZONTAL);
+
+		if (actor->isMovingRight())
+			idle->SetFlip(SDL_FLIP_NONE);
 	}
 };

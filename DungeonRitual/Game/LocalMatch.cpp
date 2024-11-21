@@ -55,13 +55,15 @@ void LocalMatch::DrawSpriteCentered(SDL_Texture* sprite, geometry::Point positio
 		height / PIXELS_IN_METER * DISTANCE_TO_PIXELS);
 }
 
-void LocalMatch::DrawSprite(SDL_Texture* sprite, geometry::Rectangle* rectangle)
+void LocalMatch::DrawAnimation(Animation* animation, geometry::Rectangle* rectangle)
 {
-	window->DrawSprite(sprite,
+	window->DrawSprite(animation->GetSprite(),
 		posToCameraX(rectangle->Position().X()),
 		posToCameraY(rectangle->Position().Y()),
 		rectangle->Width() * DISTANCE_TO_PIXELS,
-		rectangle->Height() * DISTANCE_TO_PIXELS);
+		rectangle->Height() * DISTANCE_TO_PIXELS,
+		animation->GetRotation(),
+		animation->GetFlip());
 }
 
 void LocalMatch::CreateBackgroundTexture()
@@ -182,6 +184,10 @@ void LocalMatch::Update()
 
 void LocalMatch::Display()
 {
+	// Update animations
+	for (auto& [actor, animation_set] : animations)
+		animation_set->CheckState();
+
 	// Draw
 	// Draw environment
 	for (Layer layer : background)
@@ -193,7 +199,7 @@ void LocalMatch::Display()
 	
 	// Draw actors
 	for (Actor* actor : actors)
-		DrawSprite(animations[actor]->getAnimation()->GetSprite(), actor->getRectangle());
+		DrawAnimation(animations[actor]->getAnimation(), actor->getRectangle());
 
 	// Display
 	window->DisplayFrame();

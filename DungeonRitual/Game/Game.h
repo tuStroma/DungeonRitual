@@ -14,6 +14,9 @@ private:
 
 	Match* match = nullptr;
 
+	void OnlineGame();
+	void OfflineGame();
+
 public:
 	Game();
 

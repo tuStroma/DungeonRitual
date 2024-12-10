@@ -3,6 +3,8 @@
 
 #include "Rectangle.h"
 #include "Segment.h"
+#include "Circle.h"
+#include "CircularSector.h"
 #include "Figures.h"
 
 // Detect and resolve collisions of 2 Shapes
@@ -33,6 +35,10 @@ namespace geometry
 					return false;
 
 				return true;
+			}
+			inline double Distance(Point a, Point b)
+			{
+				return sqrt(pow(a.X() - b.X(), 2) + pow(a.Y() - b.Y(), 2));
 			}
 		}
 
@@ -69,6 +75,21 @@ namespace geometry
 				return helpers::CollinearSegmentsOverlap(s1, s2);
 
 			return s1.Contains(intersection) && s2.Contains(intersection);
+		}
+
+		inline bool CircleToCircle(Circle& c1, Circle& c2)
+		{
+			double distance = helpers::Distance(c1.Position(), c2.Position());
+			double collision_distance = c1.Radious() + c2.Radious();
+
+			return distance < collision_distance;
+		}
+
+		inline bool PointToCircle(Point& p, Circle& c)
+		{
+			double distance = helpers::Distance(p, c.Position());
+
+			return distance < c.Radious();
 		}
 
 		// Resolve collision to touch two shapes.

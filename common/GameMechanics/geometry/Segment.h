@@ -26,6 +26,10 @@ namespace geometry
 		Point LowerPoint() { return vector.Y() > 0 ? Position() : EndPoint(); }
 		Point UpperPoint() { return vector.Y() > 0 ? EndPoint() : Position(); }
 
+
+		bool isVertical() { return vector.X() == 0; }
+		bool isHorisontal() { return vector.Y() == 0; }
+
 		// Geometry
 		bool Contains(Point p) // Assumes that p lies on the same line as segment
 		{

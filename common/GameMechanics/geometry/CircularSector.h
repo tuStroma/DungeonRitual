@@ -1,7 +1,7 @@
 #pragma once
-#pragma once
-#include "Shape.h"
 #include <numbers>
+#include "Shape.h"
+#include "Geometry.h"
 
 namespace geometry
 {
@@ -11,14 +11,6 @@ namespace geometry
 		double radious = 0;
 		double beginning = 0;
 		double end = 1;
-
-		Point AngleToPoint(double angle)
-		{
-			double rad_angle = angle * 2 * std::numbers::pi;
-			double x = sin(rad_angle) * radious;
-			double y = cos(rad_angle) * radious;
-			return Point(x, y);
-		}
 
 	public:
 		CircularSector() {}
@@ -30,11 +22,24 @@ namespace geometry
 		double Radious() { return radious; }
 		Point SectorBegin()
 		{
-			return AngleToPoint(beginning);
+			return AngleToPoint(beginning, radious) + position;
 		}
 		Point SectorEnd()
 		{
-			return AngleToPoint(end);
+			return AngleToPoint(end, radious) + position;
+		}
+
+		bool IsInside(Point p)
+		{
+			if (Distance(position, p) >= radious)
+				return false;
+
+			double angle = PointToAngle(p - position);
+
+			if (beginning > end)
+				return angle > beginning || angle < end;
+
+			return angle > beginning && angle < end;
 		}
 	};
 } // geometry

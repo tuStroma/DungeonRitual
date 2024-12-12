@@ -12,6 +12,9 @@ namespace geometry
 		double b = 0;
 		double c = 0;
 	public:
+		Line(double a, double b, double c)
+			:a(a), b(b), c(c)
+		{}
 		Line(Segment& s)
 		{
 			if (s.Vector().X() == 0)
@@ -67,6 +70,17 @@ namespace geometry
 			double x = (l.C() - c) / (a - l.A());
 			double y = Y(x);
 			return Point(x, y);
+		}
+
+		Line Perpendicular(Point p)
+		{
+			if (b == 0)
+				return Line(0, 1, -p.Y());
+
+			if (a == 0)
+				return Line(1, 0, -p.X());
+
+			return Line(-1 / a, 1, p.X() / a - p.Y());
 		}
 	};
 } // geometry

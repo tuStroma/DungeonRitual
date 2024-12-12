@@ -24,6 +24,12 @@ namespace geometry
 		void Set(Point p) { x = p.x; y = p.y; }
 		void Move(Point p);
 
-		bool operator==(const Point& p);
+		bool operator==(const Point p);
+		Point operator*(const double& m);
+		Point& operator*=(const double& m);
+		Point operator+(const Point& m);
+		Point& operator+=(const Point& m);
+		Point operator-(const Point& m);
+		Point& operator-=(const Point& m);
 	};
 } // geometry

@@ -1,5 +1,5 @@
 #pragma once
-#include <cmath>
+#include "Geometry.h"
 
 #include "Rectangle.h"
 #include "Segment.h"
@@ -35,10 +35,6 @@ namespace geometry
 					return false;
 
 				return true;
-			}
-			inline double Distance(Point a, Point b)
-			{
-				return sqrt(pow(a.X() - b.X(), 2) + pow(a.Y() - b.Y(), 2));
 			}
 		}
 
@@ -79,7 +75,7 @@ namespace geometry
 
 		inline bool CircleToCircle(Circle& c1, Circle& c2)
 		{
-			double distance = helpers::Distance(c1.Position(), c2.Position());
+			double distance = Distance(c1.Position(), c2.Position());
 			double collision_distance = c1.Radious() + c2.Radious();
 
 			return distance < collision_distance;
@@ -87,9 +83,23 @@ namespace geometry
 
 		inline bool PointToCircle(Point& p, Circle& c)
 		{
-			double distance = helpers::Distance(p, c.Position());
+			double distance = Distance(p, c.Position());
 
 			return distance < c.Radious();
+		}
+
+		inline bool SectorToSegment(CircularSector& cs, Segment& s)
+		{
+			Segment sector_begin(cs.Position(), cs.SectorBegin());
+			Segment sector_end(cs.Position(), cs.SectorEnd());
+
+			if (SegmentToSegment(sector_begin, s) || SegmentToSegment(sector_end, s))
+				return true;
+
+			// If closest point inside sector return true
+			Point closest = ClosestPoint(cs.Position(), s);
+			
+			return cs.IsInside(closest);
 		}
 
 		// Resolve collision to touch two shapes.
@@ -147,11 +157,6 @@ namespace geometry
 					double connection_y = (down + up) / 2;
 
 					return Point(connection_x, connection_y);
-				}
-
-				double Round(double value, double precision = 1.0)
-				{
-					return std::round(value / precision) * precision;
 				}
 			}
 

@@ -94,31 +94,96 @@ namespace Collisions
 
 		EXPECT_TRUE(geometry::collisions::CircleToCircle(c1, c2));
 	}
+
+	// Sector to Segment
+	TEST(SectorToSegment, collision_on_sector_beginning_collision)
+	{
+		geometry::CircularSector cs(geometry::Point(0, 0), 2, 0.125, 0.25);
+		geometry::Segment s(geometry::Point(2, 1), geometry::Point(-3, 0));
+
+		EXPECT_TRUE(geometry::collisions::SectorToSegment(cs, s));
+	}
+
+	TEST(SectorToSegment, collision_on_sector_end_collision)
+	{
+		geometry::CircularSector cs(geometry::Point(0, 0), 2, 0, 0.25);
+		geometry::Segment s(geometry::Point(1, 2), geometry::Point(0, -3));
+
+		EXPECT_TRUE(geometry::collisions::SectorToSegment(cs, s));
+	}
+
+	TEST(SectorToSegment, collision_on_closest_point_in_sector)
+	{
+		geometry::CircularSector cs(geometry::Point(0, 0), 2, 0, 0.5);
+		geometry::Segment s(geometry::Point(1, 2), geometry::Point(0, -3));
+
+		EXPECT_TRUE(geometry::collisions::SectorToSegment(cs, s));
+	}
+
+	TEST(SectorToSegment, no_collision_on_closest_point_outside_angles)
+	{
+		geometry::CircularSector cs(geometry::Point(0, 0), 2, 0, 0.5);
+		geometry::Segment s(geometry::Point(-1, 2), geometry::Point(0, -3));
+
+		EXPECT_FALSE(geometry::collisions::SectorToSegment(cs, s));
+	}
 }
 
 namespace Geometry
 {
+	// Point
+	TEST(Point, vector_multiplication)
+	{
+		geometry::Point p(1,2);
+
+		geometry::Point p2 = p * 2;
+
+		p *= 3;
+
+		EXPECT_TRUE(p2 == geometry::Point(2, 4));
+		EXPECT_TRUE(p == geometry::Point(3, 6));
+	}
+
+	TEST(Point, equals)
+	{
+		geometry::Point p1(1, 2);
+		geometry::Point p2(1, 2);
+
+		EXPECT_TRUE(p1 == p2);
+	}
+
 	// Circular Sector
 	TEST(CircularSector, angle_to_point_1) 
 	{
 		geometry::CircularSector s(geometry::Point(0, 0), 2, 0, 1);
 
-		EXPECT_EQ(geometry::collisions::contact::Round(s.SectorBegin().X(), 0.001), 0);
-		EXPECT_EQ(geometry::collisions::contact::Round(s.SectorBegin().Y(), 0.001), 2);
+		EXPECT_EQ(geometry::Round(s.SectorBegin().X(), 0.001), 0);
+		EXPECT_EQ(geometry::Round(s.SectorBegin().Y(), 0.001), 2);
 
-		EXPECT_EQ(geometry::collisions::contact::Round(s.SectorEnd().X(), 0.001), 0);
-		EXPECT_EQ(geometry::collisions::contact::Round(s.SectorEnd().Y(), 0.001), 2);
+		EXPECT_EQ(geometry::Round(s.SectorEnd().X(), 0.001), 0);
+		EXPECT_EQ(geometry::Round(s.SectorEnd().Y(), 0.001), 2);
 	}
-
 
 	TEST(CircularSector, angle_to_point_2)
 	{
 		geometry::CircularSector s(geometry::Point(0, 0), 2, 0.125, 0.25);
 
-		EXPECT_EQ(geometry::collisions::contact::Round(s.SectorBegin().X(), 0.001), round(sqrt(2) * 1000) / 1000);
-		EXPECT_EQ(geometry::collisions::contact::Round(s.SectorBegin().Y(), 0.001), round(sqrt(2) * 1000) / 1000);
+		EXPECT_EQ(geometry::Round(s.SectorBegin().X(), 0.001), geometry::Round(sqrt(2), 0.001));
+		EXPECT_EQ(geometry::Round(s.SectorBegin().Y(), 0.001), geometry::Round(sqrt(2), 0.001));
 
-		EXPECT_EQ(geometry::collisions::contact::Round(s.SectorEnd().X(), 0.001), 2);
-		EXPECT_EQ(geometry::collisions::contact::Round(s.SectorEnd().Y(), 0.001), 0);
+		EXPECT_EQ(geometry::Round(s.SectorEnd().X(), 0.001), 2);
+		EXPECT_EQ(geometry::Round(s.SectorEnd().Y(), 0.001), 0);
+	}
+
+	// Geometry
+	TEST(Geometry, point_to_angle)
+	{
+		geometry::Point p1(0, 1);
+		geometry::Point p2(1, 0);
+		geometry::Point p3(-1, -1);
+
+		EXPECT_EQ(geometry::PointToAngle(p1), 0);
+		EXPECT_EQ(geometry::PointToAngle(p2), 0.25);
+		EXPECT_EQ(geometry::PointToAngle(p3), 0.625);
 	}
 }

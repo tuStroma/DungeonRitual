@@ -40,8 +40,8 @@ public:
 	}
 
 	// Segment properties
-	bool isVertical() { return getSegment()->Vector().X() == 0; }
-	bool isHorisontal() { return getSegment()->Vector().Y() == 0; }
+	bool isVertical() { return getSegment()->isVertical(); }
+	bool isHorisontal() { return getSegment()->isHorisontal(); }
 	bool isRightSlope()
 	{
 		if (isVertical() || isHorisontal())

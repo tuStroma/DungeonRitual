@@ -6,6 +6,7 @@
 
 #include "AssetLoader/AssetLoader.h"
 #include "GameObject.h"
+#include "MatchEnvironment.h"
 #include "Actor/Actor.h"
 #include "Actor/OutsideController.h"
 
@@ -23,9 +24,10 @@ protected:
 
 	// Game status
 
-	std::vector<Actor*> actors;
-	std::vector<GameObject*> walls;
-	std::vector<Slope*> slopes;
+	MatchEnvironment environment;
+	//std::vector<Actor*> actors;
+	//std::vector<GameObject*> walls;
+	//std::vector<Slope*> slopes;
 
 	// Time
 	std::chrono::system_clock::time_point t1, t2;

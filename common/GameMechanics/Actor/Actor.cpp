@@ -1,6 +1,14 @@
 #include "Actor.h"
 #include "OutsideController.h"
 
+void Actor::CheckFacingDirection()
+{
+	if (moving_left == moving_right)
+		return;
+
+	facing_right = moving_right;
+}
+
 Actor::Actor()
 {
 }
@@ -63,9 +71,17 @@ void Actor::TakeAction()
 	controller->TakeAction(this);
 }
 
+void Actor::SetVerticalSpeed(double speed)
+{
+	vertical_speed = speed;
+	standing_on = nullptr;
+}
+
 void Actor::Move(double t)
 {
 	double vx = 0;
+
+	CheckFacingDirection();
 
 	if (standing_on)
 	{
@@ -82,10 +98,6 @@ void Actor::Move(double t)
 	vertical_speed = MAX_FALL_SPEED > vertical_speed ? MAX_FALL_SPEED : vertical_speed;
 
 	shape->MoveBy(geometry::Point(vx * t, vertical_speed * t));
-
-	// Set facing directions
-	if (vx > 0) facing_right = true;
-	else if (vx < 0) facing_right = false;
 
 	// Continue abilities
 	basic_attack->Continue();

@@ -36,6 +36,8 @@ private:
 
 	Ability* basic_attack = nullptr;
 
+	void CheckFacingDirection();
+
 public:
 	Actor();
 	Actor(geometry::Rectangle* shape)
@@ -61,6 +63,10 @@ public:
 	// Movement getters
 	bool isAvoidingSlopes() { return moving_down; }
 
+	// State
+	GameObject* GetStandingOn() { return standing_on; }
+	void SetVerticalSpeed(double speed);
+
 	void Move(double t);
 	void WalkOnObject(GameObject* floor, double t);
 
@@ -68,6 +74,7 @@ public:
 
 	geometry::Rectangle* getRectangle();
 
+	// Serialization
 	Data* Serialize();
 	static size_t SerializationSize();
 

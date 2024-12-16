@@ -70,7 +70,7 @@ void LocalMatch::CreateBackgroundTexture()
 {
 	// Surface size
 	int left = 0, right = 0, up = 0, down = 0;
-	for (GameObject* go : walls)
+	for (GameObject* go : environment.walls)
 	{
 		geometry::Rectangle* r = static_cast<geometry::Rectangle*>(go->GetShape());
 		left = fmin(left, r->Left() * PIXELS_IN_METER);
@@ -79,7 +79,7 @@ void LocalMatch::CreateBackgroundTexture()
 		down = fmin(down, r->Down() * PIXELS_IN_METER);
 	}
 
-	for (Slope* sl : slopes)
+	for (Slope* sl : environment.slopes)
 	{
 		geometry::Segment* s = static_cast<geometry::Segment*>(sl->GetShape());
 		left = fmin(left, s->LeftPoint().X() * PIXELS_IN_METER);
@@ -99,10 +99,10 @@ void LocalMatch::CreateBackgroundTexture()
 	int blue = SDL_MapRGB(surface->format, 0, 0, 0xFF);
 	SDL_FillRect(surface, NULL, black);
 
-	for (GameObject* wall : walls)
+	for (GameObject* wall : environment.walls)
 		DrawObject(surface, wall, blue);
 
-	for (Slope* slope : slopes)
+	for (Slope* slope : environment.slopes)
 		DrawObject(surface, slope, blue);
 
 	Animation* animation = new Animation(surface, window->GetRenderer());
@@ -188,7 +188,7 @@ void LocalMatch::Update()
 	UpdateState(time_delta);
 
 	// Camera position
-	camera = actors[player_index]->Position();
+	camera = environment.actors[player_index]->Position();
 }
 
 void LocalMatch::Display()
@@ -207,7 +207,7 @@ void LocalMatch::Display()
 							layer.depth);
 	
 	// Draw actors
-	for (Actor* actor : actors)
+	for (Actor* actor : environment.actors)
 		DrawAnimation(animations[actor]->getAnimation(), actor->getRectangle());
 
 	// Display
@@ -242,14 +242,14 @@ LocalMatch::LocalMatch(Window* window, std::string map, int player_index, Client
 	}
 
 	// Load animations
-	for (Actor* actor : actors)
+	for (Actor* actor : environment.actors)
 	{
 		ActorAnimations* animation_set = new ActorAnimations(actor, "Players/test", window->GetRenderer());
 		animations[actor] = animation_set;
 	}
 
 	// Get the player controller
-	ActorController* pl = actors[player_index]->getController();
+	ActorController* pl = environment.actors[player_index]->getController();
 	player_controller = dynamic_cast<OutsideController*>(pl);
 }
 
@@ -265,7 +265,7 @@ Window* LocalMatch::GetWindow()
 
 void LocalMatch::MakeActionAsPlayer(int player_id, Action action)
 {
-	OutsideController* controller = dynamic_cast<OutsideController*>(actors[player_id]->getController());
+	OutsideController* controller = dynamic_cast<OutsideController*>(environment.actors[player_id]->getController());
 
 	if (controller)
 		controller->AddAction(action);

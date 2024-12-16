@@ -38,6 +38,11 @@ private:
 
 	void CheckFacingDirection();
 
+	void Move(double t);
+	void WalkOnObject(GameObject* floor, double t);
+
+	void TakeAction();
+
 public:
 	Actor();
 	Actor(geometry::Rectangle* shape)
@@ -56,8 +61,6 @@ public:
 	void BasicAttack();
 
 	bool isFacingRight() { return facing_right; }
-
-	void TakeAction();
 	ActorController* getController() { return controller; }
 
 	// Movement getters
@@ -67,8 +70,7 @@ public:
 	GameObject* GetStandingOn() { return standing_on; }
 	void SetVerticalSpeed(double speed);
 
-	void Move(double t);
-	void WalkOnObject(GameObject* floor, double t);
+	void Update(double t);
 
 	void ResolveCollision(geometry::Point connection, GameObject* obj);
 

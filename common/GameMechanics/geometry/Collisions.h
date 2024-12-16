@@ -102,6 +102,22 @@ namespace geometry
 			return cs.IsInside(closest);
 		}
 
+		inline bool SectorToRectangle(CircularSector& cs, Rectangle& r)
+		{
+			Point left_down = Point(r.Left(), r.Down());
+			Point right_up = Point(r.Right(), r.Up());
+
+			Segment left(left_down, Point(0, r.Height()));
+			Segment down(left_down, Point(r.Width(), 0));
+			Segment right(right_up, Point(0, -r.Height()));
+			Segment up(right_up, Point(-r.Width(), 0));
+
+			return	SectorToSegment(cs, left) ||
+					SectorToSegment(cs, right) ||
+					SectorToSegment(cs, up) ||
+					SectorToSegment(cs, down);
+		}
+
 		// Resolve collision to touch two shapes.
 		// The return value is a point lying on the contact surface.
 		namespace contact

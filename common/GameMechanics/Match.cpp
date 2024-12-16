@@ -17,9 +17,7 @@ void Match::UpdateState(double time_delta)
 	// Move all objects
 	for (Actor* actor : environment.actors)
 	{
-		actor->TakeAction();
-
-		actor->Move(time_delta);
+		actor->Update(time_delta);
 
 		// Check colisions
 		for (GameObject* wall : environment.walls)

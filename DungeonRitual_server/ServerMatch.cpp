@@ -20,7 +20,7 @@ void ServerMatch::Input()
 	for (auto& [player_id, controller] : controllers)
 	{
 		int player_number = players[player_id]->getMatchId();
-		Actor* player = actors[player_number];
+		Actor* player = environment.actors[player_number];
 		controller->TakeAction(player);
 	}
 }

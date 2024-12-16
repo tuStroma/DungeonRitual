@@ -77,6 +77,16 @@ void Actor::SetVerticalSpeed(double speed)
 	standing_on = nullptr;
 }
 
+void Actor::Update(double t)
+{
+	TakeAction();
+
+	Move(t);
+
+	// Continue abilities
+	basic_attack->Continue(t);
+}
+
 void Actor::Move(double t)
 {
 	double vx = 0;
@@ -98,9 +108,6 @@ void Actor::Move(double t)
 	vertical_speed = MAX_FALL_SPEED > vertical_speed ? MAX_FALL_SPEED : vertical_speed;
 
 	shape->MoveBy(geometry::Point(vx * t, vertical_speed * t));
-
-	// Continue abilities
-	basic_attack->Continue();
 }
 
 void Actor::WalkOnObject(GameObject* floor, double t)

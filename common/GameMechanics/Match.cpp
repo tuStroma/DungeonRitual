@@ -70,6 +70,10 @@ Match::Match(std::string map)
 		node = node->next_sibling();
 	}
 
+
+	// Add basic attack ability
+	for (Actor* actor : actors)
+		actor->AddAbility(new Hit(actor));
 }
 
 void Match::addObject(GameObject* object)

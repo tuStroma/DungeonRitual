@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cmath>
 
+#include "Abilities/Ability.h"
+
 #include "../PhysicsParameters.h"
 #include "../GameObject.h"
 #include "../Slope.h"
@@ -22,6 +24,8 @@ private:
 	double jump_speed = 15.0;
 
 	// Actor state
+	bool facing_right = true;
+
 	bool moving_left = false;
 	bool moving_right = false;
 	bool moving_down = false;
@@ -30,6 +34,8 @@ private:
 
 	ActorController* controller = nullptr;
 
+	Ability* basic_attack = nullptr;
+
 public:
 	Actor();
 	Actor(geometry::Rectangle* shape)
@@ -37,14 +43,17 @@ public:
 	{}
 	Actor(rapidxml::xml_node<>* node);
 
+	void AddAbility(Ability* ability);
+
 	// Actor controlls
 	void MoveLeft(bool move)  { moving_left = move; }
 	void MoveRight(bool move) { moving_right = move; }
 	void MoveDown(bool move)  { moving_down = move; }
 	void Jump(bool jump);
 
-	bool isMovingLeft() { return moving_left; }
-	bool isMovingRight() { return moving_right; }
+	void BasicAttack();
+
+	bool isFacingRight() { return facing_right; }
 
 	void TakeAction();
 	ActorController* getController() { return controller; }

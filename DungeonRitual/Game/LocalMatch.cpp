@@ -154,6 +154,15 @@ void LocalMatch::Input()
 			else if (event->key.keysym.sym == SDLK_s) UserAction(StopDown);
 			else if (event->key.keysym.sym == SDLK_SPACE) UserAction(StopJump);
 			break;
+		case SDL_MOUSEBUTTONDOWN:
+			if (event->button.button == SDL_BUTTON_LEFT)
+			{
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+				UserAction(BasicAttack);
+				std::cout << "Mouse left click at (" << x << ", " << y << ")\n";
+			}
+			break;
 		case SDL_QUIT:
 			quit = 1;
 			break;

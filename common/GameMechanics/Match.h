@@ -9,6 +9,9 @@
 #include "Actor/Actor.h"
 #include "Actor/OutsideController.h"
 
+#include "Actor/Abilities/Ability.h"
+#include "Actor/Abilities/Hit.h"
+
 #include "ObjectCollisions.h"
 
 class Match

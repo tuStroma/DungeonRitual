@@ -36,13 +36,8 @@ public:
 
 	void CheckState()
 	{
-		if (actor->isMovingLeft() == actor->isMovingRight())
-			return;
-
-		if (actor->isMovingLeft())
+		actor->isFacingRight() ?
+			idle->SetFlip(SDL_FLIP_NONE) :
 			idle->SetFlip(SDL_FLIP_HORIZONTAL);
-
-		if (actor->isMovingRight())
-			idle->SetFlip(SDL_FLIP_NONE);
 	}
 };

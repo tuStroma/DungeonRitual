@@ -30,6 +30,17 @@ Actor::Actor(rapidxml::xml_node<>* node)
 	controller = new OutsideController();
 }
 
+void Actor::AddAbility(Ability* ability)
+{
+	if (basic_attack)
+	{
+		delete basic_attack;
+		basic_attack = nullptr;
+	}
+
+	basic_attack = ability;
+}
+
 void Actor::Jump(bool jump)
 {
 	if (standing_on && !jumping)
@@ -39,6 +50,12 @@ void Actor::Jump(bool jump)
 	}
 	
 	jumping = jump;
+}
+
+void Actor::BasicAttack()
+{
+	if (basic_attack)
+		basic_attack->Execute();
 }
 
 void Actor::TakeAction()
@@ -65,6 +82,13 @@ void Actor::Move(double t)
 	vertical_speed = MAX_FALL_SPEED > vertical_speed ? MAX_FALL_SPEED : vertical_speed;
 
 	shape->MoveBy(geometry::Point(vx * t, vertical_speed * t));
+
+	// Set facing directions
+	if (vx > 0) facing_right = true;
+	else if (vx < 0) facing_right = false;
+
+	// Continue abilities
+	basic_attack->Continue();
 }
 
 void Actor::WalkOnObject(GameObject* floor, double t)

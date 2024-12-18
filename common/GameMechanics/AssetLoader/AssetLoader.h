@@ -79,8 +79,8 @@ public:
         if (!attribute)
             return default_val;
 
-        return  !std::string(attribute->value()).compare("") &&
-                !std::string(attribute->value()).compare("0") &&
-                !std::string(attribute->value()).compare("false");
+        return  std::string(attribute->value()).compare("") !=0 &&
+                std::string(attribute->value()).compare("0") != 0 &&
+                std::string(attribute->value()).compare("false") != 0;
     }
 };

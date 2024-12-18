@@ -20,13 +20,21 @@ namespace geometry
 
 		// Getters
 		double Radious() { return radious; }
+		Point SectorBeginVector()
+		{
+			return AngleToPoint(beginning, radious);
+		}
 		Point SectorBegin()
 		{
-			return AngleToPoint(beginning, radious) + position;
+			return SectorBeginVector() + position;
+		}
+		Point SectorEndVector()
+		{
+			return AngleToPoint(end, radious);
 		}
 		Point SectorEnd()
 		{
-			return AngleToPoint(end, radious) + position;
+			return SectorEndVector() + position;
 		}
 
 		bool IsInside(Point p)

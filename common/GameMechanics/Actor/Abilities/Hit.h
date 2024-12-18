@@ -13,8 +13,21 @@ class Hit : public Ability
 private:
 	geometry::CircularSector hit_range;
 
+	void UpdateHitRange()
+	{
+		geometry::Point centre = actor->Position();
+		geometry::Point offset = geometry::Point(actor->getRectangle()->Width() / 2, 0);
+		actor->isFacingRight() ? centre += offset : centre -= offset;
+		double beginning = actor->isFacingRight() ? 0.125 : 0.625;
+		double end = actor->isFacingRight() ? 0.375 : 0.875;
+
+		hit_range = geometry::CircularSector(centre, 1.5, beginning, end);
+	}
+
 	void HitCollisions()
 	{
+		UpdateHitRange();
+
 		for (Actor* actor : environment->actors)
 		{
 			if (actor != this->actor &&
@@ -33,13 +46,7 @@ public:
 		if (active || cooldown)
 			return;
 
-		geometry::Point centre = actor->Position();
-		geometry::Point offset = geometry::Point(actor->getRectangle()->Width() / 2, 0);
-		actor->isFacingRight() ? centre += offset : centre -= offset;
-		double beginning = actor->isFacingRight() ? 0.125 : 0.625;
-		double end = actor->isFacingRight() ? 0.375 : 0.875;
-
-		hit_range = geometry::CircularSector(centre, 1.5, beginning, end);
+		UpdateHitRange();
 
 		for (Actor* actor : environment->actors)
 		{

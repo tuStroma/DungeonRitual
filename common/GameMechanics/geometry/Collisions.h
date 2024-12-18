@@ -90,8 +90,8 @@ namespace geometry
 
 		inline bool SectorToSegment(CircularSector& cs, Segment& s)
 		{
-			Segment sector_begin(cs.Position(), cs.SectorBegin());
-			Segment sector_end(cs.Position(), cs.SectorEnd());
+			Segment sector_begin(cs.Position(), cs.SectorBeginVector());
+			Segment sector_end(cs.Position(), cs.SectorEndVector());
 
 			if (SegmentToSegment(sector_begin, s) || SegmentToSegment(sector_end, s))
 				return true;

@@ -135,7 +135,7 @@ public:
 
 		while (time_delta > time_counter)
 		{
-			time_delta - time_counter;
+			time_delta -= time_counter;
 			Frame* next = current->Next();
 			if (!next)
 				break;

@@ -40,7 +40,7 @@ void LocalMatch::DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color)
 	}
 }
 
-void LocalMatch::DrawSpriteCentered(SDL_Texture* sprite, geometry::Point position, int width, int height, double paralax)
+void LocalMatch::DrawSpriteCentered(Animation* animation, geometry::Point position, int width, int height, double paralax)
 {
 	double match_width = width / PIXELS_IN_METER;
 	double match_height = height / PIXELS_IN_METER;
@@ -48,22 +48,29 @@ void LocalMatch::DrawSpriteCentered(SDL_Texture* sprite, geometry::Point positio
 	double x = camera.X() + (position.X() - camera.X()) / paralax;
 	double y = camera.Y() + (position.Y() - camera.Y()) / paralax;
 
-	window->DrawSprite(sprite,
+	window->DrawSprite(animation->GetSprite(time_delta),
 		posToCameraX(x),
 		posToCameraY(y),
 		width / PIXELS_IN_METER * DISTANCE_TO_PIXELS,
-		height / PIXELS_IN_METER * DISTANCE_TO_PIXELS);
+		height / PIXELS_IN_METER * DISTANCE_TO_PIXELS,
+		animation->GetRotation(),
+		animation->GetFlip());
 }
 
 void LocalMatch::DrawAnimation(Animation* animation, geometry::Rectangle* rectangle)
 {
-	window->DrawSprite(animation->GetSprite(),
+	window->DrawSprite(animation->GetSprite(time_delta),
 		posToCameraX(rectangle->Position().X()),
 		posToCameraY(rectangle->Position().Y()),
 		rectangle->Width() * DISTANCE_TO_PIXELS,
 		rectangle->Height() * DISTANCE_TO_PIXELS,
 		animation->GetRotation(),
 		animation->GetFlip());
+}
+
+void LocalMatch::DrawAnimation(Animation* animation, geometry::Point position)
+{
+	DrawSpriteCentered(animation, position, animation->GetWidth(), animation->GetHeight());
 }
 
 void LocalMatch::CreateBackgroundTexture()
@@ -200,7 +207,7 @@ void LocalMatch::Display()
 	// Draw
 	// Draw environment
 	for (Layer layer : background)
-		DrawSpriteCentered(layer.animation->GetSprite(),
+		DrawSpriteCentered(layer.animation,
 							layer.position,
 							layer.animation->GetWidth(),
 							layer.animation->GetHeight(),
@@ -208,7 +215,7 @@ void LocalMatch::Display()
 	
 	// Draw actors
 	for (Actor* actor : environment.actors)
-		DrawAnimation(animations[actor]->getAnimation(), actor->getRectangle());
+		DrawAnimation(animations[actor]->getAnimation(), actor->Position());
 
 	// Display
 	window->DisplayFrame();

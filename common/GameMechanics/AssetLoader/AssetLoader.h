@@ -73,13 +73,14 @@ public:
     }
 
     // Static helpers
-    static bool BoolFromAttribute(rapidxml::xml_node<>* node, std::string attr)
+    static bool BoolFromAttribute(rapidxml::xml_node<>* node, std::string attr, bool default_val = true)
     {
-        rapidxml::xml_attribute<>* attribute = node->first_attribute("left");
+        rapidxml::xml_attribute<>* attribute = node->first_attribute(attr.c_str());
         if (!attribute)
-            return true;
+            return default_val;
 
-        return  attribute->value() != "" &&
-            attribute->value() != "0";
+        return  !std::string(attribute->value()).compare("") &&
+                !std::string(attribute->value()).compare("0") &&
+                !std::string(attribute->value()).compare("false");
     }
 };

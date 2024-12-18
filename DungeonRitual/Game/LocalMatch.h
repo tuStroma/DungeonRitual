@@ -60,8 +60,9 @@ private:
 	std::map<Actor*, ActorAnimations*> animations;
 
 	void DrawObject(SDL_Surface* surface, GameObject* obj, Uint32 color);
-	void DrawSpriteCentered(SDL_Texture* sprite, geometry::Point position, int width, int height, double paralax = 1);
+	void DrawSpriteCentered(Animation* animation, geometry::Point position, int width, int height, double paralax = 1);
 	void DrawAnimation(Animation* animation, geometry::Rectangle* rectangle);
+	void DrawAnimation(Animation* animation, geometry::Point position);
 	void CreateBackgroundTexture();
 
 	// Controle

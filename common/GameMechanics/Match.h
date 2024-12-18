@@ -33,6 +33,7 @@ protected:
 	std::chrono::system_clock::time_point t1, t2;
 	std::chrono::system_clock::time_point time_count;
 	int frame_count = 0;
+	double time_delta = 0;
 
 	long long TimeDelta(std::chrono::system_clock::time_point end,
 						std::chrono::system_clock::time_point begin);

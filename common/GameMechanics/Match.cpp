@@ -43,6 +43,8 @@ double Match::UpdateTime()
 	t1 = t2;
 	frame_count++;
 
+	time_delta = delta;
+
 	return delta;
 }
 

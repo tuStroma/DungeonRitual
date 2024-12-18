@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <rapidxml.hpp>
 #include <rapidxml_utils.hpp>
+#include "../../common/GameMechanics/AssetLoader/AssetLoader.h"
 
 #define ACTORS_PATH "../common/Assets/Actors/"
 
@@ -69,7 +70,7 @@ private:
 
 	Frame* first = nullptr;
 	Frame* current = nullptr;
-	int time_counter = 0;
+	double time_counter = 0;
 
 	// Manipulations
 	double rotation = 0;
@@ -78,6 +79,8 @@ private:
 public:
 	Animation(rapidxml::xml_node<>* node, std::string asset_path, SDL_Renderer* renderer)
 	{
+		bool circular = AssetLoader::BoolFromAttribute(node, "circle", true);
+
 		node = node->first_node();
 
 		// Load sprites
@@ -104,9 +107,10 @@ public:
 			node = node->next_sibling();
 		}
 
-		if (current)
+		if (current && circular)
 			current->SetNext(first);
-		current = first;
+
+		Reset();
 	}
 	Animation(SDL_Surface* surface, SDL_Renderer* renderer)
 	{
@@ -115,24 +119,33 @@ public:
 		current->SetNext(current);
 	}
 
-	SDL_Texture* GetSprite()
+	void Reset()
 	{
-		int now = SDL_GetTicks();
+		current = first;
+		time_counter = first->GetDuration() * 0.001;
+	}
 
+	SDL_Texture* GetSprite(double time_delta)
+	{
 		SDL_Texture* sprite = current->GetSprite();
-		int duration = current->GetDuration();
+		int duration_ms = current->GetDuration();
 
-		if (duration == 0)
+		if (duration_ms == 0)
 			return sprite;
 
-		while (now - time_counter > duration)
+		while (time_delta > time_counter)
 		{
-			current = current->Next();
-			time_counter += duration;
+			time_delta - time_counter;
+			Frame* next = current->Next();
+			if (!next)
+				break;
+			current = next;
 
 			sprite = current->GetSprite();
-			duration = current->GetDuration();
+			time_counter = current->GetDuration() * 0.001;
 		}
+
+		time_counter -= time_delta;
 
 		return sprite;
 	}

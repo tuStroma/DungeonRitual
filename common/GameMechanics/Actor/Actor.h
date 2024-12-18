@@ -51,6 +51,7 @@ public:
 	Actor(rapidxml::xml_node<>* node);
 
 	void AddAbility(Ability* ability);
+	Ability* ActiveAbility();
 
 	// Actor controlls
 	void MoveLeft(bool move)  { moving_left = move; }
@@ -65,6 +66,7 @@ public:
 
 	// Movement getters
 	bool isAvoidingSlopes() { return moving_down; }
+	bool isMoving();
 
 	// State
 	GameObject* GetStandingOn() { return standing_on; }

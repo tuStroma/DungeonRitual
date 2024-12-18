@@ -41,4 +41,6 @@ public:
 
 	virtual void Execute() {}
 	virtual void Continue(double delta) {}
+
+	bool isActive() { return active; }
 };

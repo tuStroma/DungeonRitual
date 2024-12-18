@@ -49,6 +49,13 @@ void Actor::AddAbility(Ability* ability)
 	basic_attack = ability;
 }
 
+Ability* Actor::ActiveAbility()
+{
+	if (basic_attack->isActive())
+		return basic_attack;
+	return nullptr;
+}
+
 void Actor::Jump(bool jump)
 {
 	if (standing_on && !jumping)
@@ -69,6 +76,11 @@ void Actor::BasicAttack()
 void Actor::TakeAction()
 {
 	controller->TakeAction(this);
+}
+
+bool Actor::isMoving()
+{
+	return moving_left != moving_right;
 }
 
 void Actor::SetVerticalSpeed(double speed)

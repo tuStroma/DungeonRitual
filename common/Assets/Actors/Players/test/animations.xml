@@ -2,4 +2,14 @@
 <Idle>
   <Frame path="1.bmp" duration="250"/>
   <Frame path="2.bmp" duration="250"/>
-</Idle> 
+</Idle>
+<Walk>
+  <Frame path="1.bmp" duration="125"/>
+  <Frame path="2.bmp" duration="125"/>
+  <Frame path="3.bmp" duration="125"/>
+  <Frame path="2.bmp" duration="125"/>
+</Walk>
+<Hit circle="false">
+  <Frame path="1.bmp" duration="100"/>
+  <Frame path="2.bmp" duration="400"/>
+</Hit>

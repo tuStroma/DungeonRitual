@@ -7,6 +7,11 @@
 #include "ServerMatch.h"
 #include "GameClient.h"
 
+#define LAG_SIMULATION false
+#if LAG_SIMULATION
+	#define LAG 0.5
+#endif
+
 class Server : public net::server::IServer<NetContext>
 {
 private:
@@ -15,6 +20,29 @@ private:
 
 	uint64_t match_id = 0;
 	std::map<uint64_t, ServerMatch*> game_room;
+
+#if LAG_SIMULATION
+	// LAG simulation
+	struct delayed_msg
+	{
+		net::common::Message<NetContext>* msg;
+		uint64_t client_id;
+		std::chrono::system_clock::time_point send_time;
+		delayed_msg(net::common::Message<NetContext>* msg, uint64_t client_id, std::chrono::system_clock::time_point send_time)
+			:msg(msg), client_id(client_id), send_time(send_time)
+		{}
+		explicit delayed_msg(const delayed_msg& msg)
+			//:msg(msg.msg), client_id(msg.client_id), delay(msg.delay)
+		{
+			this->msg = msg.msg;
+			this->client_id = msg.client_id;
+			this->send_time = msg.send_time;
+		}
+	};
+	std::list<delayed_msg> delayed_messages;
+	std::thread sending_thread;
+	bool close_sending_thread = false;
+#endif
 
 	void StartNewMatch(std::string map, int players_number)
 	{
@@ -81,13 +109,44 @@ private:
 	}
 
 public:
-	Server(int port) : net::server::IServer<NetContext>(port) {}
+	Server(int port) : net::server::IServer<NetContext>(port) 
+	{
+#if LAG_SIMULATION
+		using namespace std::chrono;
+		sending_thread = std::thread([&]() {
+			while (!close_sending_thread)
+			{
+				system_clock::time_point t2 = system_clock::now();
+				for (auto it = delayed_messages.begin(); it != delayed_messages.end();) {
+					double delta = duration_cast<microseconds>(t2 - (*it).send_time).count() * 0.000001;
 
+					if (delta >= LAG) {
+						IServer::Send(*(*it).msg, (*it).client_id);
+						//delete &(*it).msg;
+						it = delayed_messages.erase(it);
+					}
+					else
+						it++;
+				}
+			}
+			});
+#endif
+	}
+#if LAG_SIMULATION
+	~Server()
+	{
+		close_sending_thread = true;
+		sending_thread.join();
+	}
+#endif
+
+#if LAG_SIMULATION
+	// LAG simulation
 	void Send(net::common::Message<NetContext>& msg, uint64_t client_id)
 	{
-		IServer::Send(msg, client_id);
-		std::cout << "Sending msg!!\n"; // test
+		delayed_messages.push_back(delayed_msg(new net::common::Message<NetContext>(msg), client_id, std::chrono::system_clock::now()));
 	}
+#endif
 protected:
 	virtual void OnMessage(net::common::Message<NetContext>* msg, uint64_t sender)
 	{

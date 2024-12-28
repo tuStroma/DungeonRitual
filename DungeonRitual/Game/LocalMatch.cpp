@@ -182,12 +182,21 @@ void LocalMatch::Update()
 	// Time delta
 	double time_delta = UpdateTime();
 
-	// Print frames
+	// Print frames and ping
 	if (TimeDelta(t2, time_count) >= 1000000)
 	{
 		std::cout << frame_count << "\n";
 		frame_count = 0;
 		time_count = t2;
+
+		// Ping
+		if (game_client)
+		{
+			long long ping = game_client->getPing();
+			if (ping >= 0)
+				std::cout << "PING [" << ping << "]\n";
+			game_client->Ping();
+		}
 	}
 
 	ServerStateUpdate();

@@ -82,12 +82,23 @@ private:
 
 public:
 	Server(int port) : net::server::IServer<NetContext>(port) {}
+
+	void Send(net::common::Message<NetContext>& msg, uint64_t client_id)
+	{
+		IServer::Send(msg, client_id);
+		std::cout << "Sending msg!!\n"; // test
+	}
 protected:
 	virtual void OnMessage(net::common::Message<NetContext>* msg, uint64_t sender)
 	{
 		// Process message
 		switch (msg->getHeader().getType())
 		{
+		case ClientPing:
+		{
+			Send(*msg, sender);
+			break;
+		}
 		case FindGame:
 		{
 			std::cout << "Client " << sender << " joined the queue\n";

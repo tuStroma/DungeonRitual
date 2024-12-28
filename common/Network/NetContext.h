@@ -2,6 +2,10 @@
 
 enum NetContext
 {
+	// Ping
+	ServerPing,
+	ClientPing,
+
 	// Match handling
 	FindGame,
 	GameFound,

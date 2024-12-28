@@ -10,6 +10,11 @@ private:
 	LocalMatch* match = nullptr;
 	int position = -1;
 
+	// Ping
+	bool ping_sent = false;
+	std::chrono::system_clock::time_point ping_request;
+	long long ping_ms = -1;
+
 public:
 	Client(Window* window) : net::client::IClient<NetContext>(), window(window) {}
 
@@ -28,12 +33,43 @@ public:
 		Send(msg);
 	}
 
+	void Ping()
+	{
+		if (ping_sent)
+			return;
+		net::common::Message<NetContext> msg(ClientPing, 0);
+		ping_sent = true;
+		ping_request = std::chrono::system_clock::now();
+		Send(msg);
+	}
+
+	long long getPing()
+	{
+		return ping_ms;
+	}
+
 protected:
 	virtual void OnMessage(net::common::Message<NetContext>* msg)
 	{
 		// Process message
 		switch (msg->getHeader().getType())
 		{
+		case ServerPing:
+		{
+			Send(*msg);
+			break;
+		}
+		case ClientPing:
+		{
+			using namespace std::chrono;
+			if (!ping_sent)
+				break;
+
+			system_clock::time_point response = system_clock::now();
+			ping_ms = duration_cast<milliseconds>(response - ping_request).count();
+			ping_sent = false;
+			break;
+		}
 		case GameStart:
 		{
 			int player_id;

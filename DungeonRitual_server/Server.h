@@ -102,8 +102,9 @@ private:
 		msg.put(&player_id, sizeof(int));
 		msg.put(&action, sizeof(Action));
 
+		// Send to everyone, including player taking
+		// the move action, to compensate the lag
 		match->ForEachPlayer([&](uint64_t id, GameClient* game_client) {
-			if (client_id != id)
 				this->Send(msg, id);
 			});
 	}

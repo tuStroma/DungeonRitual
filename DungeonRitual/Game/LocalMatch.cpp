@@ -118,8 +118,6 @@ void LocalMatch::CreateBackgroundTexture()
 
 void LocalMatch::UserAction(Action action)
 {
-	player_controller->AddAction(action);
-
 	// Online component
 	if (game_client) // Send action to server
 	{
@@ -127,6 +125,9 @@ void LocalMatch::UserAction(Action action)
 		action_msg.put(&action, sizeof(action));
 		game_client->Send(action_msg);
 	}
+	else
+		player_controller->AddAction(action); // Take action immediately only in offline game
+                                              // In online game wait for Server Move message to compensate lag
 }
 
 void LocalMatch::ServerStateUpdate()

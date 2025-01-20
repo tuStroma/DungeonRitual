@@ -36,6 +36,34 @@ namespace geometry
 
 				return true;
 			}
+
+			inline bool CollisionWithHorisontalSegment(Segment& s1, Segment& s2)
+			{
+				Segment horisontal, other;
+				if (s1.isHorisontal()) { horisontal = s1; other = s2; }
+				else if (s2.isHorisontal()) { horisontal = s2; other = s1; }
+				else if (!s1.isHorisontal())
+					return false;
+
+				// Ignore cases where both are horisontal
+				if (other.isHorisontal())
+					return false;
+
+				double dx = other.UpperPoint().X() - other.LowerPoint().X();
+				double dy = other.UpperPoint().Y() - other.LowerPoint().Y();
+				double d_horisontal = horisontal.LowerPoint().Y() - other.LowerPoint().Y();
+				double a = d_horisontal / dy;
+
+				horisontal.MoveBy(Point(-a * dx, 0)); // Shift left proportionally by height to make 'other' segment vertical
+
+				double horisontal_y = horisontal.LowerPoint().Y();
+				double other_x = other.LowerPoint().X();
+
+				return horisontal_y <= other.UpperPoint().Y() &&
+					horisontal_y >= other.LowerPoint().Y() &&
+					other_x <= horisontal.RightPoint().X() &&
+					other_x >= horisontal.LeftPoint().X();
+			}
 		}
 
 		inline bool RectangleToRectangle(Rectangle& r1, Rectangle& r2)
@@ -69,6 +97,10 @@ namespace geometry
 
 			if (isinf(intersection.X()))
 				return helpers::CollinearSegmentsOverlap(s1, s2);
+
+			// Special case - workaround for numerical errors
+			if (helpers::CollisionWithHorisontalSegment(s1, s2))
+				return true;
 
 			return s1.Contains(intersection) && s2.Contains(intersection);
 		}

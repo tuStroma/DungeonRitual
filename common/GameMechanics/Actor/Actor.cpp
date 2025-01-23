@@ -221,7 +221,7 @@ void Actor::ResolveCollision(geometry::Point connection, GameObject* obj)
 		standing_on = obj;
 		vertical_speed = 0;
 	}
-	else if (con_y == higher_edge)
+	else if (con_y >= higher_edge)
 		vertical_speed = 0;
 }
 

@@ -23,8 +23,8 @@ namespace geometry
 				double a_down = fmin(a_start.Y(), a_end.Y());
 				double a_up = fmax(a_start.Y(), a_end.Y());
 
-				Point b_start = s1.Position();
-				Point b_end = s1.EndPoint();
+				Point b_start = s2.Position();
+				Point b_end = s2.EndPoint();
 				double b_left = fmin(b_start.X(), b_end.X());
 				double b_right = fmax(b_start.X(), b_end.X());
 				double b_down = fmin(b_start.Y(), b_end.Y());
@@ -206,6 +206,59 @@ namespace geometry
 
 					return Point(connection_x, connection_y);
 				}
+			}
+
+			inline Point SegmentToSegment(Segment& s1, Segment& s2)
+			{
+				Line a = Line(s1);
+				Line b = Line(s2);
+
+				Point intersection = a.Intersect(b);
+
+				if (isnan(intersection.X()))
+					return Point(NAN, NAN);
+
+				if (isinf(intersection.X()))
+					return s1.Position();
+
+				bool collision = false;
+
+				collision |= helpers::CollisionWithHorisontalSegment(s1, s2);
+				collision |= s1.Contains(intersection) && s2.Contains(intersection);
+
+				if (collision)
+					return intersection;
+			}
+
+			inline Point SegmentToRectangle(Segment& s, Rectangle& r)
+			{
+				Point left_up = Point(r.Left(), r.Up());
+				Point right_up = Point(r.Right(), r.Up());
+				Point vertical_vector = Point(0, -r.Height());
+				Point horisontal_vector = Point(r.Width(), 0);
+
+				Segment left = Segment(left_up, vertical_vector);
+				Segment right = Segment(right_up, vertical_vector);
+				Segment up = Segment(left_up, horisontal_vector);
+				Segment down = Segment(left_up + vertical_vector, horisontal_vector);
+
+
+				bool left_collision = collisions::SegmentToSegment(left, s);
+				bool right_collision = collisions::SegmentToSegment(right, s);
+				bool up_collision = collisions::SegmentToSegment(up, s);
+				bool down_collision = collisions::SegmentToSegment(down, s);
+
+				if (left_collision && up_collision)		return Point(r.Left(), r.Up());
+				if (left_collision && down_collision)	return Point(r.Left(), r.Down());
+				if (right_collision && up_collision)	return Point(r.Right(), r.Up());
+				if (right_collision && down_collision)	return Point(r.Right(), r.Down());
+
+				if (left_collision)		return SegmentToSegment(left, s);
+				if (right_collision)	return SegmentToSegment(right, s);
+				if (up_collision)		return SegmentToSegment(up, s);
+				if (down_collision)		return SegmentToSegment(down, s);
+
+				return Point(NAN, NAN);
 			}
 
 			inline Point RectangleToRectangle(Rectangle& r1, Rectangle& r2)

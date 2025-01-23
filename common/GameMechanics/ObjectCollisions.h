@@ -30,8 +30,27 @@ namespace object_collisions
 		geometry::Segment* segment = slope.getSegment();
 
 		// Check collision from below
-		if (helpers::ActorWasBelowSlope(actor, slope))
+		if (helpers::ActorWasBelowSlope(actor, slope) && slope.isPenetrable())
 			return false;
+
+		// Unpenetrable slope
+		if (!slope.isPenetrable())
+		{
+			geometry::Point left_up = geometry::Point(rectangle->Left(), rectangle->Up());
+			geometry::Point right_up = geometry::Point(rectangle->Right(), rectangle->Up());
+			geometry::Point vertical_vector = geometry::Point(0, -rectangle->Height());
+			geometry::Point horisontal_vector = geometry::Point(rectangle->Width(), 0);
+
+			geometry::Segment left = geometry::Segment(left_up, vertical_vector);
+			geometry::Segment right = geometry::Segment(right_up, vertical_vector);
+			geometry::Segment up = geometry::Segment(left_up, horisontal_vector);
+			geometry::Segment down = geometry::Segment(left_up + vertical_vector, horisontal_vector);
+
+			return geometry::collisions::SegmentToSegment(left, *segment) ||
+				   geometry::collisions::SegmentToSegment(right, *segment) ||
+				   geometry::collisions::SegmentToSegment(up, *segment) ||
+				   geometry::collisions::SegmentToSegment(down, *segment);
+		}
 
 		// Horisontal collision
 		if (slope.isHorisontal())
@@ -63,6 +82,36 @@ namespace object_collisions
 			// Evaluate collision
 			if (!object_collisions::ActorToSlope(actor, slope))
 				return geometry::Point(NAN, NAN);
+
+			// Unpenetrable slope
+			if (!slope.isPenetrable())
+			{
+				geometry::Rectangle* rectangle = actor.getRectangle();
+				geometry::Segment* segment = slope.getSegment();
+
+				geometry::Point connection = geometry::collisions::contact::SegmentToRectangle(*segment, *rectangle);
+
+				geometry::Point move_vector = actor.GetShape()->Position() - actor.GetShape()->PreviousPosition();
+				double new_position_x = actor.GetShape()->Position().X();
+				double new_position_y = actor.GetShape()->Position().Y();
+
+				double previous_up =	actor.GetShape()->PreviousPosition().Y() + rectangle->Height() / 2;
+				double previous_down =	actor.GetShape()->PreviousPosition().Y() - rectangle->Height() / 2;
+				double previous_left =	actor.GetShape()->PreviousPosition().X() - rectangle->Width() / 2;
+				double previous_right =	actor.GetShape()->PreviousPosition().X() + rectangle->Width() / 2;
+
+				if (connection.Y() >= previous_up || connection.Y() <= previous_down)
+					new_position_y = actor.GetShape()->PreviousPosition().Y();
+
+				if (connection.X() >= previous_right || connection.X() <= previous_left)
+					new_position_x = actor.GetShape()->PreviousPosition().X();
+
+				geometry::Point new_position = geometry::Point(new_position_x, new_position_y);
+				actor.GetShape()->MoveTo(new_position);
+				//actor.GetShape()->MoveTo(actor.GetShape()->PreviousPosition());
+
+				return connection;
+			}
 
 			// Move actor
 			if (actor.getRectangle()->Down() < slope.getSegment()->UpperPoint().Y())

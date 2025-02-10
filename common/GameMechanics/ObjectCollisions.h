@@ -106,9 +106,12 @@ namespace object_collisions
 				if (connection.X() >= previous_right || connection.X() <= previous_left)
 					new_position_x = actor.GetShape()->PreviousPosition().X();
 
+				// If actor is above slope don't cancel horisontal movement
+				if (rectangle->Down() >= segment->UpperPoint().Y())
+					new_position_x = actor.GetShape()->Position().X();
+
 				geometry::Point new_position = geometry::Point(new_position_x, new_position_y);
 				actor.GetShape()->MoveTo(new_position);
-				//actor.GetShape()->MoveTo(actor.GetShape()->PreviousPosition());
 
 				return connection;
 			}

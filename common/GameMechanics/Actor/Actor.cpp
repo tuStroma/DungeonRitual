@@ -38,15 +38,19 @@ Actor::Actor(rapidxml::xml_node<>* node)
 	controller = new OutsideController();
 }
 
-void Actor::AddAbility(Ability* ability)
+void Actor::AddAbility(AbilityType type, Ability* ability)
 {
-	if (basic_attack)
+	switch (type)
 	{
-		delete basic_attack;
-		basic_attack = nullptr;
+	case AbilityType::BasicAttackAbility:
+		SetAbility(ability, &basic_attack);
+		break;
+	case AbilityType::MovementAbility:
+		SetAbility(ability, &movement);
+		break;
+	default:
+		break;
 	}
-
-	basic_attack = ability;
 }
 
 Ability* Actor::ActiveAbility()
@@ -73,6 +77,12 @@ void Actor::BasicAttack()
 		basic_attack->Execute();
 }
 
+void Actor::Movement()
+{
+	if (movement)
+		movement->Execute();
+}
+
 void Actor::TakeAction()
 {
 	controller->TakeAction(this);
@@ -89,6 +99,11 @@ void Actor::SetVerticalSpeed(double speed)
 	standing_on = nullptr;
 }
 
+void Actor::SetHorisontalSpeed(double speed)
+{
+	this->speed = speed;
+}
+
 void Actor::Update(double t)
 {
 	TakeAction();
@@ -97,6 +112,7 @@ void Actor::Update(double t)
 
 	// Continue abilities
 	basic_attack->Continue(t);
+	movement->Continue(t);
 }
 
 void Actor::Move(double t)
@@ -204,6 +220,17 @@ void Actor::WalkOnObject(GameObject* floor, double t)
 			feet_x > s->Position().X() && feet_x > s->EndPoint().X())
 			standing_on = nullptr;
 	}
+}
+
+void Actor::SetAbility(Ability* ability, Ability** target)
+{
+	if (*target)
+	{
+		delete* target;
+		*target = nullptr;
+	}
+
+	*target = ability;
 }
 
 void Actor::ResolveCollision(geometry::Point connection, GameObject* obj)

@@ -12,6 +12,7 @@
 
 #include "Actor/Abilities/Ability.h"
 #include "Actor/Abilities/Hit.h"
+#include "Actor/Abilities/Dash.h"
 
 #include "ObjectCollisions.h"
 

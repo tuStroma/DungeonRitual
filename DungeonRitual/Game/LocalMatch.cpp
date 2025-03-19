@@ -155,6 +155,7 @@ void LocalMatch::Input()
 			else if (event->key.keysym.sym == SDLK_d) UserAction(Right);
 			else if (event->key.keysym.sym == SDLK_s) UserAction(Down);
 			else if (event->key.keysym.sym == SDLK_SPACE) UserAction(Jump);
+			else if (event->key.keysym.sym == SDLK_LSHIFT) UserAction(Movement);
 			break;
 		case SDL_KEYUP:
 			if (event->key.keysym.sym == SDLK_a) UserAction(StopLeft);

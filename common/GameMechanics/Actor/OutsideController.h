@@ -16,7 +16,8 @@ enum Action
 	StopDown,
 	StopJump,
 
-	BasicAttack
+	BasicAttack,
+	Movement
 };
 
 class OutsideController : public ActorController
@@ -56,6 +57,8 @@ public:
 				actor->Jump(false); break;
 			case BasicAttack:
 				actor->BasicAttack(); break;
+			case Movement:
+				actor->Movement(); break;
 			default: break;
 			}
 		}

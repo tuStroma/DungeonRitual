@@ -73,7 +73,10 @@ Match::Match(std::string map)
 
 	// Add basic attack ability
 	for (Actor* actor : environment.actors)
-		actor->AddAbility(new Hit(&environment, actor));
+	{
+		actor->AddAbility(Actor::BasicAttackAbility, new Hit(&environment, actor));
+		actor->AddAbility(Actor::MovementAbility, new Dash(&environment, actor));
+	}
 }
 
 void Match::addObject(GameObject* object)

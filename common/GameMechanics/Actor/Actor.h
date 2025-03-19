@@ -35,11 +35,14 @@ private:
 	ActorController* controller = nullptr;
 
 	Ability* basic_attack = nullptr;
+	Ability* movement = nullptr;
 
 	void CheckFacingDirection();
 
 	void Move(double t);
 	void WalkOnObject(GameObject* floor, double t);
+
+	void SetAbility(Ability* ability, Ability** target);
 
 	void TakeAction();
 
@@ -50,7 +53,13 @@ public:
 	{}
 	Actor(rapidxml::xml_node<>* node);
 
-	void AddAbility(Ability* ability);
+	enum AbilityType
+	{
+		BasicAttackAbility,
+		MovementAbility
+	};
+
+	void AddAbility(AbilityType type, Ability* ability);
 	Ability* ActiveAbility();
 
 	// Actor controlls
@@ -60,6 +69,7 @@ public:
 	void Jump(bool jump);
 
 	void BasicAttack();
+	void Movement();
 
 	bool isFacingRight() { return facing_right; }
 	ActorController* getController() { return controller; }
@@ -71,6 +81,7 @@ public:
 	// State
 	GameObject* GetStandingOn() { return standing_on; }
 	void SetVerticalSpeed(double speed);
+	void SetHorisontalSpeed(double speed);
 
 	void Update(double t);
 

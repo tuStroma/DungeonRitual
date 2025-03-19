@@ -14,38 +14,20 @@ private:
 
 public:
 	Dash(MatchEnvironment* environment, Actor* actor)
-		:Ability(environment, actor)
+		:Ability(environment, actor, 0, DASH_TIME, DASH_COOLDOWN)
 	{}
 
-	void Execute() override
+	void ExecuteAbility() override
 	{
-		if (active || cooldown)
-			return;
-
 		actor->SetHorisontalSpeed(50);
-
-		Activate();
 	}
 
-	void Continue(double delta) override
+	void ContinueAbility(double delta) override
 	{
-		if (cooldown)
-		{
-			time += delta;
-			if (time >= DASH_COOLDOWN)
-				Reset();
-			return;
-		}
+	}
 
-		if (!active)
-			return;
-
-		time += delta;
-
-		if (time >= DASH_TIME)
-		{
-			Finish();
-			actor->SetHorisontalSpeed(10);
-		}
+	void FinalizeAbility() override
+	{
+		actor->SetHorisontalSpeed(10);
 	}
 };

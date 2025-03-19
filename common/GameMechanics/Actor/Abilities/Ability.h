@@ -7,6 +7,10 @@ class Actor;
 class Ability
 {
 private:
+	double preparation_time = 0;
+	double ability_time = 0;
+	double cooldown_time = 0;
+
 protected:
 	bool active = false;
 	bool cooldown = false;
@@ -34,13 +38,55 @@ protected:
 		active = false;
 		cooldown = false;
 	}
+
+
+	virtual void ExecuteAbility() {}
+	virtual void ContinueAbility(double delta) {}
+	virtual void FinalizeAbility() {}
 public:
-	Ability(MatchEnvironment* environment, Actor* actor)
-		:environment(environment), actor(actor)
+	Ability(MatchEnvironment* environment, Actor* actor, double preparation_t, double ability_t, double cooldown_t)
+		:environment(environment),
+		actor(actor),
+		preparation_time(preparation_t),
+		ability_time(ability_t),
+		cooldown_time(cooldown_t)
 	{}
 
-	virtual void Execute() {}
-	virtual void Continue(double delta) {}
+	void Execute()
+	{
+		if (active || cooldown)
+			return;
+
+		ExecuteAbility();
+
+		Activate();
+	}
+
+	void Continue(double delta)
+	{
+		if (cooldown)
+		{
+			time += delta;
+			if (time >= cooldown_time)
+				Reset();
+			return;
+		}
+
+		if (!active)
+			return;
+
+		time += delta;
+
+		if (time >= preparation_time &&
+			time < ability_time)
+			ContinueAbility(delta);
+
+		if (time >= preparation_time + ability_time)
+		{
+			FinalizeAbility();
+			Finish();
+		}
+	}
 
 	bool isActive() { return active; }
 };

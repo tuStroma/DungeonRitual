@@ -38,14 +38,11 @@ private:
 
 public:
 	Hit(MatchEnvironment* environment, Actor* actor)
-		:Ability(environment, actor)
+		:Ability(environment, actor, HIT_PREPARATION_TIME, HIT_TIME, HIT_COOLDOWN)
 	{}
 
-	void Execute() override
+	void ExecuteAbility() override
 	{
-		if (active || cooldown)
-			return;
-
 		UpdateHitRange();
 
 		for (Actor* actor : environment->actors)
@@ -56,32 +53,10 @@ public:
 			//	distance <= 3)
 			//	actor->SetVerticalSpeed((3 - distance)/3 * 10);
 		}
-
-		Activate();
 	}
 
-	void Continue(double delta) override
+	void ContinueAbility(double delta) override
 	{
-		if (cooldown)
-		{
-			time += delta;
-			if (time >= HIT_COOLDOWN)
-				Reset();
-			return;
-		}
-
-		if (!active)
-			return;
-
-		time += delta;
-
-		if (time >= HIT_PREPARATION_TIME &&
-			time < HIT_TIME)
-			HitCollisions();
-
-		//actor->Jump(false);
-
-		if (time >= HIT_PREPARATION_TIME + HIT_TIME)
-			Finish();
+		HitCollisions();
 	}
 };

@@ -73,17 +73,21 @@ protected:
 		case GameStart:
 		{
 			int player_id;
+			char* map;
 			msg->get(&player_id, sizeof(int));
+			map = (char*)malloc(msg->getStringLen());
+			msg->getString(map);
 
 			std::cout << "Starting new match with position [" << player_id << "]\n";
 			
-			match = new LocalMatch(window, "test", player_id, this);
+			match = new LocalMatch(window, "catedral", player_id, this);
 			//match = new LocalMatch(window, "test", 0);
 			//match->Start();
 			position = player_id;
 
 			std::cout << "Match created\n";
 
+			free(map);
 			break;
 		}
 		case GameFinished:

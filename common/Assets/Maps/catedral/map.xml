@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GameObjects>
+  <Wall left	="-4"
+		right	="38"
+		up		="0"
+		down	="-1"/>
+		
+  <Wall left	="-10"
+		right	="-5"
+		up		="0.5"
+		down	="-0.5"/>
+  
+  <Slope begin_x="-4"
+		 begin_y="0"
+		 end_x="-5"
+		 end_y="0.5"
+		 penetrable="0"/>
+		
+  <Wall left	="16"
+		right	="28"
+		up		="12"
+		down	="11"/>
+		
+<!-- Staircase -->
+  <Slope begin_x="28"
+		 begin_y="0"
+		 end_x="32.5"
+		 end_y="3"
+		 penetrable="1"/>
+		
+  <Slope begin_x="32.5"
+		 begin_y="3"
+		 end_x="35.5"
+		 end_y="3"
+		 penetrable="0"/>
+		
+  <Slope begin_x="28"
+		 begin_y="6"
+		 end_x="32.5"
+		 end_y="3"
+		 penetrable="1"/>
+		
+  <Slope begin_x="28"
+		 begin_y="6"
+		 end_x="25"
+		 end_y="6"
+		 penetrable="0"/>
+		
+  <Slope begin_x="28"
+		 begin_y="6"
+		 end_x="32.5"
+		 end_y="9"
+		 penetrable="1"/>
+		
+  <Slope begin_x="32.5"
+		 begin_y="9"
+		 end_x="35.5"
+		 end_y="9"
+		 penetrable="0"/>
+		
+  <Slope begin_x="28"
+		 begin_y="12"
+		 end_x="32.5"
+		 end_y="9"
+		 penetrable="1"/>
+		 
+  <Slope begin_x="28"
+		 begin_y="12"
+		 end_x="32.5"
+		 end_y="15"
+		 penetrable="1"/>
+		
+  <Slope begin_x="32.5"
+		 begin_y="15"
+		 end_x="35.5"
+		 end_y="15"
+		 penetrable="0"/>
+		
+  <Slope begin_x="28"
+		 begin_y="18"
+		 end_x="32.5"
+		 end_y="15"
+		 penetrable="1"/>
+		
+  <Slope begin_x="28"
+		 begin_y="18"
+		 end_x="25"
+		 end_y="18"
+		 penetrable="0"/>
+		 
+  <Slope begin_x="28"
+		 begin_y="18"
+		 end_x="32.5"
+		 end_y="21"
+		 penetrable="1"/>
+		
+  <Slope begin_x="32.5"
+		 begin_y="21"
+		 end_x="35.5"
+		 end_y="21"
+		 penetrable="0"/>
+		
+  <Slope begin_x="28"
+		 begin_y="24"
+		 end_x="32.5"
+		 end_y="21"
+		 penetrable="1"/>
+		
+  <Slope begin_x="28"
+		 begin_y="24"
+		 end_x="25"
+		 end_y="24"
+		 penetrable="0"/>
+		 
+  <Slope begin_x="28"
+		 begin_y="24"
+		 end_x="32.5"
+		 end_y="27"
+		 penetrable="1"/>
+		
+  <Slope begin_x="32.5"
+		 begin_y="27"
+		 end_x="35.5"
+		 end_y="27"
+		 penetrable="0"/>
+		
+  <Slope begin_x="28"
+		 begin_y="30"
+		 end_x="32.5"
+		 end_y="27"
+		 penetrable="1"/>
+		
+  <Slope begin_x="28"
+		 begin_y="30"
+		 end_x="25"
+		 end_y="30"
+		 penetrable="0"/>
+		 
+  <Slope begin_x="28"
+		 begin_y="30"
+		 end_x="32.5"
+		 end_y="33"
+		 penetrable="1"/>
+		
+  <Slope begin_x="32.5"
+		 begin_y="33"
+		 end_x="35.5"
+		 end_y="33"
+		 penetrable="0"/>
+		
+  <Slope begin_x="28"
+		 begin_y="36"
+		 end_x="32.5"
+		 end_y="33"
+		 penetrable="1"/>
+		
+  <Slope begin_x="28"
+		 begin_y="36"
+		 end_x="25"
+		 end_y="36"
+		 penetrable="0"/>
+		 
+		 
+		 
+  <Slope begin_x="28"
+		 begin_y="36"
+		 end_x="35.5"
+		 end_y="36"
+		 penetrable="1"/>
+		
+		
+  <Wall left	="35.5"
+		right	="36.5"
+		up		="36"
+		down	="3"/>
+		
+  <Wall left	="24"
+		right	="25"
+		up		="11"
+		down	="3"/>
+		
+  <Wall left	="24"
+		right	="25"
+		up		="30"
+		down	="15"/>
+		
+  <Slope begin_x="24"
+		 begin_y="30"
+		 end_x="23"
+		 end_y="28"
+		 penetrable="1"/>
+		
+  <Wall left	="24"
+		right	="25"
+		up		="36"
+		down	="33"/>
+		
+<!-- Right tower top -->
+
+  <Slope begin_x="22"
+		 begin_y="36"
+		 end_x="24"
+		 end_y="36"
+		 penetrable="0"/>
+
+  <Slope begin_x="36.5"
+		 begin_y="36"
+		 end_x="38.5"
+		 end_y="36"
+		 penetrable="0"/>
+		 
+  <Wall left	="22"
+		right	="23"
+		up		="40"
+		down	="39"/>
+		 
+  <Wall left	="37.5"
+		right	="38.5"
+		up		="40"
+		down	="39"/>
+		
+  <Slope begin_x="22"
+		 begin_y="40"
+		 end_x="30.25"
+		 end_y="45"
+		 penetrable="0"/>
+		
+  <Slope begin_x="38.5"
+		 begin_y="40"
+		 end_x="30.25"
+		 end_y="45"
+		 penetrable="0"/>
+		
+		
+<!-- Lamps -->
+  <Slope begin_x="-2"
+		 begin_y="16"
+		 end_x="1"
+		 end_y="16"
+		 penetrable="1"/>
+		 
+  <Slope begin_x="5"
+		 begin_y="16"
+		 end_x="8"
+		 end_y="16"
+		 penetrable="1"/>
+		 
+  <Slope begin_x="12"
+		 begin_y="16"
+		 end_x="15"
+		 end_y="16"
+		 penetrable="1"/>
+		
+<!-- Ceiling --> 
+  <Slope begin_x="-4"
+		 begin_y="21"
+		 end_x="1"
+		 end_y="21"
+		 penetrable="0"/>
+		 
+  <Slope begin_x="4"
+		 begin_y="21"
+		 end_x="24"
+		 end_y="21"
+		 penetrable="0"/>
+		 
+  <Slope begin_x="2"
+		 begin_y="19"
+		 end_x="4"
+		 end_y="21"
+		 penetrable="1"/>
+	
+	<Slope begin_x="-4"
+		 begin_y="24"
+		 end_x="19"
+		 end_y="24"
+		 penetrable="0"/>
+		 
+	<Slope begin_x="23"
+		 begin_y="24"
+		 end_x="24"
+		 end_y="24"
+		 penetrable="0"/>
+		 
+	<Slope begin_x="20"
+		 begin_y="21"
+		 end_x="23"
+		 end_y="24"
+		 penetrable="0"/>
+  
+  
+  
+
+  <Actor	position_x	="1"
+			position_y	="1"
+			width		="1"
+			height		="2"
+			is_player	="true"/>
+
+  <Actor	position_x	="2"
+			position_y	="1"
+			width		="1"
+			height		="2"
+			is_player	="true"/>
+</GameObjects>
+<Layers>
+</Layers>

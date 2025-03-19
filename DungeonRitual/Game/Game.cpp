@@ -3,6 +3,7 @@
 
 #define LOCAL_HOST "127.0.0.1"
 #define LOCAL_NETWORK "192.168.1.77"
+#define LOCAL_NETWORK_2 "192.168.1.106"
 
 #define SERVER_IP LOCAL_HOST
 #define SERVER_PORT 60000
@@ -25,7 +26,7 @@ void Game::OnlineGame()
 
 void Game::OfflineGame()
 {
-	match = new LocalMatch(window, "test", 1, nullptr);
+	match = new LocalMatch(window, "catedral", 1, nullptr);
 	match->Start();
 }
 

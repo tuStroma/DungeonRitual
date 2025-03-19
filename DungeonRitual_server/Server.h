@@ -64,8 +64,9 @@ private:
 		match->ForEachPlayer([&](uint64_t id, GameClient* game_client) {
 			int player_id = game_client->getMatchId();
 
-			net::common::Message<NetContext> start_msg(GameStart, sizeof(int));
+			net::common::Message<NetContext> start_msg(GameStart, sizeof(int) + map.length());
 			start_msg.put(&player_id, sizeof(int));
+			start_msg.putString(map.c_str());
 			Send(start_msg, id);
 			});
 	}
@@ -165,7 +166,7 @@ protected:
 			queue.push_back(players[sender]);
 
 			if (queue.size() >= 2)
-				StartNewMatch("test", 2);
+				StartNewMatch("catedral", 2);
 
 			break;
 		}

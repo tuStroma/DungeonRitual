@@ -3,7 +3,7 @@
 #include <rapidxml_utils.hpp>
 #include <list>
 
-#include "../Slope.h"
+#include "../Objects/Slope.h"
 
 
 #define ASSETS_PATH "../common/Assets/"

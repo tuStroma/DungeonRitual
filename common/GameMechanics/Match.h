@@ -5,7 +5,7 @@
 #include <chrono>
 
 #include "AssetLoader/AssetLoader.h"
-#include "GameObject.h"
+#include "Objects/GameObject.h"
 #include "MatchEnvironment.h"
 #include "Actor/Actor.h"
 #include "Actor/OutsideController.h"
@@ -14,7 +14,7 @@
 #include "Actor/Abilities/Hit.h"
 #include "Actor/Abilities/Dash.h"
 
-#include "ObjectCollisions.h"
+#include "Objects/ObjectCollisions.h"
 
 class Match
 {

@@ -2,7 +2,7 @@
 #include "Ability.h"
 
 #include "../Actor.h"
-#include "../../geometry/Collisions.h"
+#include "../../Objects/geometry/Collisions.h"
 
 #define HIT_PREPARATION_TIME 0.1
 #define HIT_TIME 0.4

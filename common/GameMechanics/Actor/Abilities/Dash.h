@@ -2,7 +2,7 @@
 #include "Ability.h"
 
 #include "../Actor.h"
-#include "../../geometry/Collisions.h"
+#include "../../Objects/geometry/Collisions.h"
 
 #define DASH_TIME 0.2
 #define DASH_COOLDOWN 2

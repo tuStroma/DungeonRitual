@@ -5,8 +5,8 @@
 #include "Abilities/Ability.h"
 
 #include "../PhysicsParameters.h"
-#include "../GameObject.h"
-#include "../Slope.h"
+#include "../Objects/GameObject.h"
+#include "../Objects/Slope.h"
 
 #include "../AssetLoader/AssetLoader.h"
 

@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 
-#include "GameObject.h"
-#include "Slope.h"
+#include "Objects/GameObject.h"
+#include "Objects/Slope.h"
 #include "Actor/Actor.h"
 
 struct MatchEnvironment

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "../common/GameMechanics/geometry/Collisions.h"
+#include "../common/GameMechanics/Objects/geometry/Collisions.h"
 
 namespace Collisions
 {

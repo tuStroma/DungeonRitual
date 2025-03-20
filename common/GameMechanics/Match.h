@@ -16,6 +16,8 @@
 
 #include "Objects/ObjectCollisions.h"
 
+#include "GameModes/GameMode.h"
+
 class Match
 {
 protected:
@@ -46,8 +48,11 @@ protected:
 
 	Actor* LoadActor(rapidxml::xml_node<>* node, std::string character);
 
+	// Game mode
+	GameMode* game_mode;
+
 public:
-	Match(std::string map);
+	Match(std::string map, GameMode* mode);
 
 	void addObject(GameObject* object);
 	void addActor(Actor* actor);

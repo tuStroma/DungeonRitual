@@ -1,7 +1,9 @@
 #pragma once
 #include "Ability.h"
 
+#include "../../Communication/Events/HitEvent.h"
 #include "../Actor.h"
+#include "../../MatchEnvironment.h"
 #include "../../Objects/geometry/Collisions.h"
 
 #define HIT_PREPARATION_TIME 0.1
@@ -32,7 +34,12 @@ private:
 		{
 			if (actor != this->actor &&
 				geometry::collisions::SectorToRectangle(hit_range, *actor->getRectangle()))
+			{
 				actor->SetVerticalSpeed(20);
+
+				HitEvent event(this->actor, actor);
+				NotifyObservers(&event);
+			}
 		}
 	}
 

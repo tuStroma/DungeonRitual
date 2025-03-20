@@ -44,8 +44,8 @@ void ServerMatch::Update()
 	UpdateState(time_delta);
 }
 
-ServerMatch::ServerMatch(std::string map, Server* server)
-	:Match(map), server(server)
+ServerMatch::ServerMatch(std::string map, GameMode* mode, Server* server)
+	:Match(map, mode), server(server)
 {}
 
 void ServerMatch::AddPlayer(GameClient * player)

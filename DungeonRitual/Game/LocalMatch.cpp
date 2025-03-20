@@ -232,8 +232,8 @@ void LocalMatch::Display()
 	window->DisplayFrame();
 }
 
-LocalMatch::LocalMatch(Window* window, std::string map, int player_index, Client* game_client)
-	:Match(map),
+LocalMatch::LocalMatch(Window* window, std::string map, int player_index, Client* game_client, GameMode* mode)
+	:Match(map, mode),
 	event(new SDL_Event()),
 	window(window),
 	player_index(player_index),

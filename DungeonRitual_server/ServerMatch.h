@@ -24,7 +24,7 @@ private:
 
 	
 public:
-	ServerMatch(std::string map, Server* server);
+	ServerMatch(std::string map, GameMode* mode, Server* server);
 
 	void AddPlayer(GameClient* player);
 

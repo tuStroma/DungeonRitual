@@ -4,6 +4,8 @@
 #include <list>
 #include "../common/Network/NetContext.h"
 
+#include "../common/GameMechanics/GameModes/Tag.h"
+
 #include "ServerMatch.h"
 #include "GameClient.h"
 
@@ -47,7 +49,9 @@ private:
 	void StartNewMatch(std::string map, int players_number)
 	{
 		std::cout << "Starting new match [" << match_id << "]\n";
-		ServerMatch* match = new ServerMatch(map, this);
+
+		Tag* tag_game = new Tag();
+		ServerMatch* match = new ServerMatch(map, tag_game, this);
 
 		for (int i = 0; i < players_number; i++)
 		{

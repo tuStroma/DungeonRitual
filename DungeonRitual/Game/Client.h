@@ -1,6 +1,7 @@
 #pragma once
 #include <server_infrastructure.h>
 #include "../../common/Network/NetContext.h"
+#include "../../common/GameMechanics/GameModes/Tag.h"
 #include "LocalMatch.h"
 
 class Client : public net::client::IClient<NetContext>
@@ -80,7 +81,8 @@ protected:
 
 			std::cout << "Starting new match with position [" << player_id << "]\n";
 			
-			match = new LocalMatch(window, "catedral", player_id, this);
+			Tag* tag_game = new Tag();
+			match = new LocalMatch(window, "catedral", player_id, this, tag_game);
 			//match = new LocalMatch(window, "test", 0);
 			//match->Start();
 			position = player_id;

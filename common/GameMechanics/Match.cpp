@@ -48,7 +48,8 @@ double Match::UpdateTime()
 	return delta;
 }
 
-Match::Match(std::string map)
+Match::Match(std::string map, GameMode* mode)
+	:game_mode(mode)
 {
 	// Load map
 	std::string map_path = MAPS_PATH + map + "/map.xml";
@@ -74,8 +75,14 @@ Match::Match(std::string map)
 	// Add basic attack ability
 	for (Actor* actor : environment.actors)
 	{
-		actor->AddAbility(Actor::BasicAttackAbility, new Hit(&environment, actor));
-		actor->AddAbility(Actor::MovementAbility, new Dash(&environment, actor));
+		Hit* hit_ability = new Hit(&environment, actor);
+		Dash* dash_ability = new Dash(&environment, actor);
+
+		hit_ability->addObserver(game_mode);
+		dash_ability->addObserver(game_mode);
+
+		actor->AddAbility(Actor::BasicAttackAbility, hit_ability);
+		actor->AddAbility(Actor::MovementAbility, dash_ability);
 	}
 }
 

@@ -77,7 +77,7 @@ private:
 	void Display();
 
 public:
-	LocalMatch(Window* window, std::string map, int player_index, Client* game_client);
+	LocalMatch(Window* window, std::string map, int player_index, Client* game_client, GameMode* mode);
 
 	void addLayer(Animation* animation, geometry::Point position, double depth);
 

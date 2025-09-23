@@ -4,8 +4,10 @@
 
 class GameMode : public Observer
 {
-private:
+protected:
 	MatchEnvironment* environment = nullptr;
+
+	virtual void InitializeState() {}
 public:
 	GameMode()
 	{}
@@ -13,5 +15,8 @@ public:
 	void SetEnvironment(MatchEnvironment* environment)
 	{
 		this->environment = environment;
+		InitializeState();
 	}
+
+	virtual void Update(double time_delta) {}
 };

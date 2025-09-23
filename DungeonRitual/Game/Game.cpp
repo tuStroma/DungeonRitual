@@ -27,7 +27,7 @@ void Game::OnlineGame()
 void Game::OfflineGame()
 {
 	Tag* tag_game = new Tag();
-	match = new LocalMatch(window, "catedral", 1, nullptr, tag_game);
+	match = new LocalMatch(window, "catedral", 0, nullptr, tag_game);
 	match->Start();
 }
 

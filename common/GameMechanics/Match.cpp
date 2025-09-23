@@ -33,6 +33,9 @@ void Match::UpdateState(double time_delta)
 			actor->ResolveCollision(connection, slope);
 		}
 	}
+
+	// Update game mode
+	game_mode->Update(time_delta);
 }
 
 double Match::UpdateTime()
@@ -84,6 +87,9 @@ Match::Match(std::string map, GameMode* mode)
 		actor->AddAbility(Actor::BasicAttackAbility, hit_ability);
 		actor->AddAbility(Actor::MovementAbility, dash_ability);
 	}
+
+	// Set game mode
+	game_mode->SetEnvironment(&environment);
 }
 
 void Match::addObject(GameObject* object)

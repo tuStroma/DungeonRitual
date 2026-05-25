@@ -237,7 +237,7 @@ void Actor::ResolveCollision(geometry::Point connection, GameObject* obj)
 {
 	double con_x = connection.X();
 	double con_y = connection.Y();
-	if (isnan(con_x) || isnan(con_y))
+	if (std::isnan(con_x) || std::isnan(con_y))
 		return;
 
 	double lower_edge = shape->Position().Y() - ((geometry::Rectangle*)shape)->Height() / 2;

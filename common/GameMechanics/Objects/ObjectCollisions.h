@@ -1,5 +1,5 @@
 #pragma once
-#include "Actor/Actor.h"
+#include "../Actor/Actor.h"
 #include "Slope.h"
 
 #include "geometry/Collisions.h"

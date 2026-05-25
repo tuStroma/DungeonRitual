@@ -1,5 +1,5 @@
 #pragma once
-#include "Events/Event.h";
+#include "Events/Event.h"
 
 class Observer
 {

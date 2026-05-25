@@ -34,6 +34,7 @@
 # Directories
 *x64/
 .vs
+build/
 
 # Project
 *.sln
@@ -41,3 +42,4 @@
 *.vcxproj.filters
 *.vcxproj.user
 packages/
+.vscode/

@@ -88,14 +88,14 @@ namespace geometry
 
 			Point intersection = a.Intersect(b);
 
-			if (isnan(intersection.X()))
+			if (std::isnan(intersection.X()))
 				return false;
 
 			//if (intersection == s1.Position() || intersection == s1.EndPoint() ||
 			//	intersection == s2.Position() || intersection == s2.EndPoint())
 			//	return false;
 
-			if (isinf(intersection.X()))
+			if (std::isinf(intersection.X()))
 				return helpers::CollinearSegmentsOverlap(s1, s2);
 
 			// Special case - workaround for numerical errors
@@ -215,10 +215,10 @@ namespace geometry
 
 				Point intersection = a.Intersect(b);
 
-				if (isnan(intersection.X()))
+				if (std::isnan(intersection.X()))
 					return Point(NAN, NAN);
 
-				if (isinf(intersection.X()))
+				if (std::isinf(intersection.X()))
 					return s1.Position();
 
 				bool collision = false;

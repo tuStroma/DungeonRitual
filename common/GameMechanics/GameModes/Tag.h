@@ -16,6 +16,26 @@ private:
 			chasing_times.push_back(0);
 	}
 
+protected:
+	bool Update(double time_delta) override
+	{
+		chasing_times[chasing_actor] += time_delta;
+
+		return false; // game_time > 60.0;
+	}
+
+	void Finalize() override
+	{
+		int winner = 0;
+		for (int i = 0; i < chasing_times.size(); i++)
+		{
+			std::cout << "Player " << i << ", time:\t" << chasing_times[i] << '\n';
+			if (chasing_times[i] < chasing_times[winner])
+				winner = i;
+		}
+		std::cout << "\nThe winner is " << winner << "!\n";
+	}
+
 public:
 	void onEvent(Event* event) override
 	{
@@ -31,10 +51,5 @@ public:
 					chasing_actor = new_chaser;
 			}
 		}
-	}
-
-	void Update(double time_delta) override
-	{
-		chasing_times[chasing_actor] += time_delta;
 	}
 };

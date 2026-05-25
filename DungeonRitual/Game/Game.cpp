@@ -11,7 +11,7 @@
 void Game::OnlineGame()
 {
 	Client* client = new Client(window);
-	client->Connect(SERVER_IP, SERVER_PORT);
+	client->Connect(LOCAL_HOST, SERVER_PORT);
 
 	client->FindMatch();
 
@@ -37,15 +37,22 @@ Game::Game()
 
 void Game::Launch()
 {
-	std::cout << "Choose playing mode:\n";
-	std::cout << "1. Online\n";
-	std::cout << "2. Offline\n";
+	bool quit = false;
+	while (!quit)
+	{
+		std::cout << "Choose playing mode:\n";
+		std::cout << "1. Online\n";
+		std::cout << "2. Offline\n";
+		std::cout << "q - Quit\n";
 
-	std::string user_input;
-	std::cin >> user_input;
+		std::string user_input;
+		std::cin >> user_input;
 
-	if (user_input == "1")
-		OnlineGame();
-	else if (user_input == "2")
-		OfflineGame();
+		if (user_input == "1")
+			OnlineGame();
+		else if (user_input == "2")
+			OfflineGame();
+		else if (user_input == "q")
+			quit = true;
+	}
 }

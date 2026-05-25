@@ -35,7 +35,7 @@ void Match::UpdateState(double time_delta)
 	}
 
 	// Update game mode
-	game_mode->Update(time_delta);
+	quit |= game_mode->ModeUpdate(time_delta);
 }
 
 double Match::UpdateTime()
